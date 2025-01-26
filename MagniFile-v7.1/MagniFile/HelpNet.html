@@ -1,0 +1,77 @@
+<html>
+
+<title> MagniFile - Dennis Lang - Network Help </title>
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<title>Network Help</title>
+<body>
+
+<h2> Network Help </h2>
+
+<b>Network Information</b> displays the current list of network connections and active ports.
+Every update (automatic timer or manual pressing <b>Refresh</b> button) will add new 
+network ports in 
+<span style="background-color:#e0ffe0">GREEN</span> and mark dead connections in 
+<span style="background-color:#ffe0e0">PINK </span>.
+
+<p>
+The Tool bar contains the following commands:
+<blockquote>
+    <li>AutoUpdate - Toggles whether automatic updates occur</li>
+    <li>Refresh - Force immediate update</li>
+    <li>Reset - Clears list and reloads with active connections and resets start value of lower panel stats.</li>
+    <li>Export - Prompt for filename and Save report as CSV (comma-separated-value, readable by Excel)</li>
+    <li>Print Setup - Open printer setup dialog</li>
+    <li>FitToPage - Toggles whether printing will try to force output to a single page</li>
+    <li>Print - Print network connections report</li>
+</blockquote>
+
+
+<p>
+Each network connections provides the following information:
+
+<blockquote>
+<table border="1px">
+<tr><td><b>Process</b></td><td>Name of Process which owns connection</td></tr>
+<tr><td><b>Pid</b></td><td>Process Id of owner</td></tr>
+<tr><td><b>Local Address</b></td><td>Local address. Normally local Ip address or 127.0.0.1</td></tr>
+<tr><td><b>Local Port</b></td><td>Local Port number</td></tr>
+<tr><td><b>Remote Address</b></td><td>Remote Ip address</td></tr>
+<tr><td><b>Remote Port</b></td><td>Remote Port number</td></tr>
+<tr><td><b>Protocol</b></td><td>
+<a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol">Transmission Control Protocol (TCP)</a> or 
+<a href="http://en.wikipedia.org/wiki/User_Datagram_Protocol">User Datagram Protocol (UDP)</a></td></tr>
+<tr><td><b>Status</b></td><td>
+    <li>Listening - Server Listening for Client to connect</li>
+    <li>Established - Connection established</li>
+    <li>Closing - Start closing</li>
+    <li>FinWait1 - Partially closed (one side of connection is closed)</li>
+    <li>FinWait2 - Partially closed (one side of connection is closed)</li>
+    <li>Closed - Start closing</li>
+    <li>CloseWait - Connection closed and unavailable (prevents quick reuse of port)</li>
+    <li>0 - Udp does not require any connection</li>
+    </td></tr>
+<tr><td><b>First</b></td><td>First time connection was detected</td></tr>
+<tr><td><b>Last</b></td><td>Last time connection was detected, ~when closed,</td></tr>
+</table>
+</blockquote>
+
+
+<p>
+If you <b>Right Click</b> on the upper panel you can select from one of the following:
+<blockquote>
+    <li>Clear All - Remove all network information</li>
+    <li>Clear Selected - Remove selected network rows</li>
+    <li>Clear Dead - Remove all dead (pink) rows</li>
+</blockquote>
+
+<p>
+The lower panel displays global TCP and UDP network statistics. 
+
+
+
+</body>
+</html>

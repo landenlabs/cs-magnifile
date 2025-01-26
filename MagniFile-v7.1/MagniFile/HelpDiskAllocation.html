@@ -1,0 +1,441 @@
+<html>
+
+<title> MagniFile - Dennis Lang - Disk Allocation Help </title>
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<body>
+
+<h2> Disk Allocation Help </h2>
+
+<h3>Vista and Windows 7</h3>
+If you get <b>Failed - Access is denied.</b> you need to run Magnifile with <b>Administrator privleges</b>.
+Right click on magnifile.exe, select properties and check ON, Run As Administrator.
+
+<p><center>
+<img src="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAXkAAAIDCAMAAADWjJ41AAAAAXNSR0IArs4c6QAAAARnQU1BAACx
+jwv8YQUAAAMAUExURQEBAQ4TChAXBxcbHwAAOBohGQkxNDgAADgAOCIoLiQrMi4/Ijc3NwAAWAAA
+ZQA1XgAyeDEAWDkAZTU1WzMzdjVFLgFQVQBmZjFXVzpmZlQAAFgAMVkwCFMuJ2kAAGUAOWw3AHkx
+MFEAVkA8QWYAZl5eAFVBPGZmAGZmOkVJSEdNWFhFQVVXVVJVaFxqeWxsbGJmc2hwcHBwcAEAjAA5
+jzk5jz8+uxoW+iEd/jgtzjEu/gBXmwBSsQBltTFXnDVeqDp9shJ51AZ97ip0x141hGY6kEE//0lX
+k1ZbsE5imERlom1tjGdnpFRVwVBP+0NmwV9h5GdmxG9v/nyFVnucewGGjTqQkDqQtgOEzheQ8TiP
+2CWY7ymk9TjM8lKKjlONuUyqtG+MkG2Gs3u7nHq6ulSY2ESc4VCp5myayXa52Wa1/UPW+3vG+4AA
+AI85AI45OYQ1XpZUAJxXMZBmAKJSALNGObNoALh1M4ZWVYxuTZBvcLVTRblmWLx2bP4AAP8rK8tL
+OMhZRc5qVc95ZP9KSvxtbpJtlIhlr4uLOLWFBbWTN5yHcpu6erGYRbOGbbehT7u7esOUGdmPOdyx
+HdOpL+O4HOO7K9abVtKJc8yrU9m7e+KGeuqzUP61Zd7CKPLDGvLRMfvlHv7pM9vHW/HOTffkSv3l
+aI2OjoiLlZ6IhZOTk4WFs4qat52Fs5qfo5CdvY+1j5elqrGFiKiBoq6gmqqqqq2ytbS4uoubyI6O
+/pC12rS7x66x/JnWmZPbuLXakLrXubX9tZbZ2Y/W+7rW2KbG563O8KPY+7/A/rnd4bbY+rb/27H2
+/dOQiMWcotuvitiwremTiumjm+aspeiyree6sPSro/Kyqv+8vNrakNratdr+tf3Zj/Dds/39tc7O
+zsrO1M7TzszV2dbcwNXV1cXI4cjJ/sna4sLe+9Xe5NbY/tr72cvs7Mvj+8X/4cj3+Nvo5tfp+9v9
+/ubIyOrQz//NxP/a2vr31uzs7OLu+uTw5Orz+//q6v//4fz8/AAAAMPxHasAAAAJcEhZcwAADsMA
+AA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjVJivzgAAAzpklEQVR4Xu2d
+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
+AABJRU5ErkJggg==" alt="run-as.png" />
+</center>
+<p>
+<h3> Disk Allocation</h3>
+Select a Disk Drive letter (ex: C:, D;, ..) and press <b>Refresh</b> to generate a picture of the disk cluster allocation.
+The generated picture is a map of the drive's allocated clusters.
+The top left corner is the beginning of the drive (first sector on outer track) and continues left to right, top to bottom.
+The lower right corner is the end of the disk drive.  Each colored pixel indicates one or more allocated clusters. 
+Every black pixel is an unallocated cluster group..  
+<p>
+Most disk drives are too large to draw their allocation with a pixel per cluster.
+Large disk drives are drawn by associating one or more cluster per pixel (cluster group).
+For example, if the disk contains a 350,000 clusters but the image drawn is (100 x 100 = 10,000 pixels), each pixel represents 35 clusters.
+The color of the pixel indicates the percent of the cluster group which is allocated.
+The color legend is drawn on the right edge of the image and starts with yellow (low percent allocated) to red (high percent allocated).
+<p>
+The color of the pixel does not indicate if the drive's files are fragmented. It just indicates how tightly packed the disk is allocated.
+<p>
+<h3>File Allocation</h3>
+To determine if one or more files are fragmented, press the <b>Browse</b> button.  
+Select one or more files and press <b>Open</b> button in the file selection dialog.
+<p>
+Blue and/or pink bars will be drawn  marking the cluster sequences allocated by each file. 
+The blue and pink color will alternate for each fragment of the file.  
+Details of the allocation will appear in the small text list box on the right edge and a summary will appear in the status bar at the bottom.
+The blue and/or pink bars are drawn several pixels wide to make them easier to see. 
+<p>
+A ring will be drawn on the beginning and ending cluster to make it easier to find. When a group of files are drawn, only the last file is marked.
+<p>
+If you hover over the filename in the right list table, it will redraw the files allocation and mark the beginning and ending allocation.
+<p>
+
+<h3>System Files</h3>
+To make it easier to check the fragmentation of important system files, you can press the <b>System Files</b> button to get a list of system files.
+Double click on a system file to check its allocation.  The map may fail if the system file does not exist on the currectly selected disk drive.
+
+<p>
+   <a href="http://en.wikipedia.org/wiki/NTFS"> http://en.wikipedia.org/wiki/NTFS </a>
+</p>
+<p>
+NTFS contains several files which define and organize the file system. 
+In all respects, most of these files are structured like any other user file 
+($Volume being the most peculiar), but are not of direct interest to file system clients. 
+These metafiles define files, back up critical file system data, buffer file system changes, 
+manage free space allocation, satisfy <a href="/wiki/BIOS" title="BIOS">BIOS</a> expectations, 
+track bad allocation units, and store security and disk space usage information. 
+All content is in an unnamed data stream, unless otherwise indicated.
+</p> 
+
+<table class="wikitable sortable"> 
+<tr> 
+<th>Segment Number</th> 
+<th>File Name</th> 
+<th>Purpose</th> 
+</tr> 
+<tr> 
+<td>0</td> 
+<td><tt>$MFT</tt></td> 
+<td>Describes all files on the volume, including file names, timestamps, stream names, and lists of cluster numbers where data streams reside, indexes, security identifiers, and file attributes like "read only", "compressed", "encrypted", etc.</td> 
+</tr> 
+<tr> 
+<td>1</td> 
+<td><tt>$MFTMirr</tt></td> 
+<td>Duplicate of the first vital entries of $MFT, usually 4 entries (4 <a href="/wiki/Kibibyte" title="Kibibyte">KiB</a>).</td> 
+</tr> 
+<tr> 
+<td>2</td> 
+<td><tt>$LogFile</tt></td> 
+<td>Contains transaction log of file system metadata changes.</td> 
+</tr> 
+<tr> 
+<td>3</td> 
+<td><tt>$Volume</tt></td> 
+<td>Contains information about the volume, namely the volume object identifier, 
+<a href="/wiki/Volume_label" title="Volume label" class="mw-redirect">volume label</a>, 
+file system version, and volume flags (mounted, chkdsk requested, requested $LogFile resize, 
+mounted on NT 4, volume serial number updating, structure upgrade request). 
+This data is not stored in a data stream, but in special MFT attributes: 
+If present, a volume object ID is stored in an $OBJECT_ID record; the volume label is 
+stored in a $VOLUME_NAME record, and the remaining volume data is in a $VOLUME_INFORMATION record. 
+Note: volume serial number is stored in file $Boot (below).</td> 
+</tr> 
+<tr> 
+<td>4</td> 
+<td><tt>$AttrDef</tt></td> 
+<td>A table of MFT attributes which associates numeric identifiers with names.</td> 
+</tr> 
+<tr> 
+<td>5</td> 
+<td><tt>.</tt></td> 
+<td><a href="/wiki/Root_directory" title="Root directory">Root directory</a>. Directory data is stored in $INDEX_ROOT and $INDEX_ALLOCATION attributes both named $I30.</td> 
+</tr> 
+<tr> 
+<td>6</td> 
+<td><tt>$Bitmap</tt></td> 
+<td>An array of bit entries: each bit indicates whether its corresponding cluster is used (allocated) or free (available for allocation).</td> 
+</tr> 
+<tr> 
+<td>7</td> 
+<td><tt>$Boot</tt></td> 
+<td><a href="/wiki/Volume_boot_record" title="Volume boot record">Volume boot record</a>. This file is always located at the first clusters on the volume. It contains <a href="/w/index.php?title=Bootstrap_code&amp;action=edit&amp;redlink=1" class="new" title="Bootstrap code (page does not exist)">bootstrap code</a> (see <a href="/wiki/NTLDR" title="NTLDR">NTLDR</a>/<a href="/wiki/Windows_Vista_startup_process#Windows_Boot_Manager" title="Windows Vista startup process">BOOTMGR</a>) and a <a href="/wiki/BIOS_parameter_block" title="BIOS parameter block">BIOS parameter block</a> including a <a href="/wiki/Volume_serial_number" title="Volume serial number">volume serial number</a> and cluster numbers of $MFT and $MFTMirr. $Boot is usually 8192 bytes long.</td> 
+</tr> 
+<tr> 
+<td>8</td> 
+<td><tt>$BadClus</tt></td> 
+<td>A file which contains all the clusters marked as having <a href="/wiki/Bad_sector" title="Bad sector">bad sectors</a>. This file simplifies cluster management by the chkdsk utility, both as a place to put newly discovered bad sectors, and for identifying unreferenced clusters. This file contains two data streams, even on volumes with no bad sectors: an unnamed stream contains bad sectors—it is zero length for perfect volumes; the second stream is named $Bad and contains all clusters on the volume not in the first stream.<sup id="cite_ref-32" class="reference"><a href="#cite_note-32"><span>[</span>33<span>]</span></a></sup></td> 
+</tr> 
+<tr> 
+<td>9</td> 
+<td><tt>$Secure</tt></td> 
+<td><a href="/wiki/Access_control_list" title="Access control list">Access control list</a> database which reduces overhead having many identical ACLs stored with each file, by uniquely storing these ACLs in this database only (contains two indices $SII: perhaps<sup class="noprint Template-Fact" title="This claim needs references to reliable sources from January 2008" style="white-space:nowrap;">[<i><a href="/wiki/Wikipedia:Citation_needed" title="Wikipedia:Citation needed">citation needed</a></i>]</sup> <i>Security ID Index</i> and $SDH: <i>Security Descriptor Hash</i> which index the stream named $SDS containing actual ACL table).<sup id="cite_ref-insidewin2kntfs_1-4" class="reference"><a href="#cite_note-insidewin2kntfs-1"><span>[</span>2<span>]</span></a></sup></td> 
+</tr> 
+<tr> 
+<td>10</td> 
+<td><tt>$UpCase</tt></td> 
+<td>A table of unicode uppercase characters for ensuring case insensitivity in Win32 and DOS namespaces.</td> 
+</tr> 
+<tr> 
+<td>11</td> 
+<td><tt>$Extend</tt></td> 
+<td>A filesystem directory containing various optional extensions, such as $Quota, $ObjId, $Reparse or $UsnJrnl.</td> 
+</tr> 
+<tr> 
+<td>12 ... 23</td> 
+<td colspan="2">Reserved for $MFT extension entries.<sup id="cite_ref-33" class="reference"><a href="#cite_note-33"><span>[</span>34<span>]</span></a></sup></td> 
+</tr> 
+<tr> 
+<td>usually 24</td> 
+<td><tt>$Extend\$Quota</tt></td> 
+<td>Holds disk quota information. Contains two index roots, named $O and $Q.</td> 
+</tr> 
+<tr> 
+<td>usually 25</td> 
+<td><tt>$Extend\$ObjId</tt></td> 
+<td>Holds <a href="/w/index.php?title=Distributed_link_tracking&amp;action=edit&amp;redlink=1" class="new" title="Distributed link tracking (page does not exist)">distributed link tracking</a> information. Contains an index root and allocation named $O.</td> 
+</tr> 
+<tr> 
+<td>usually 26</td> 
+<td><tt>$Extend\$Reparse</tt></td> 
+<td>Holds <a href="/wiki/Reparse_point" title="Reparse point" class="mw-redirect">reparse point</a> data (such as <a href="/wiki/Symbolic_link" title="Symbolic link">symbolic links</a>). Contains an index root and allocation named $R.</td> 
+</tr> 
+</table> 
+<p>
+These metafiles are treated specially by Windows and are difficult to directly view: special purpose-built tools are needed.<sup id="cite_ref-34" class="reference"><a href="#cite_note-34"><span>[</span>35<span>]</span></a></sup></p> 
+<h3>From MFT records to attribute lists, attributes, and streams</h3> 
+<p>For each file (or directory) described in the MFT record, there's a linear repository of stream descriptors (also named <i>attributes</i>), packed together in a variable-length record (also named an <i>attributes list</i>), with extra padding to fill the fixed 1KB size of every MFT record, and that fully describes the effective streams associated with that file.</p> 
+<p>Each stream (or <i>attribute</i>) itself has a single type (internally just a fixed-size integer in the stored descriptor, but most often handled in applications using an equivalent symbolic name in the <tt>FileOpen()</tt> or <tt>FileCreate()</tt> API call), a single optional stream name (completely unrelated to the effective filenames), plus optional associated data for that stream. For NTFS, the standard data of files, or the index data for directories are handled the same way as other data for alternate data streams, or for standard attributes. They are just one of the attributes stored in one or several attribute lists.</p> 
+<ul> 
+<li>For each file described in the MFT record (or in the non-resident respository of stream descriptors, see below), the stream descriptors identified by their (stream type value, stream name) must be unique. Additionally, NTFS has some ordering constraints for these descriptors.</li> 
+<li>There's a predefined null stream type, used to indicate the end of the list of stream descriptors in the streams repository for that file. It must be present as the last stream descriptor in each stream repository (all other storage space available after it will be ignored and just consists in padding bytes to match the record size in the MFT or a cluster size in a non-resident streams repository).</li> 
+<li>Some stream types are required and must be present in each MFT record, except unused records that are just indicated by a stream with null stream type.
+<ul> 
+<li>This is the case for the standard attributes that are stored as a fixed-size record and containing the <a href="/wiki/Timestamp" title="Timestamp">timestamps</a> and other basic single-bit attributes (compatible with those managed by <a href="/wiki/FAT" title="FAT" class="mw-redirect">FAT</a>/FAT32 in DOS or Windows 95/98 applications).</li> 
+</ul> 
+</ul> 
+
+<p>
+<hr />
+
+<p></p>
+<h3> Special Registry Files </h3>
+<a href="http://en.wikipedia.org/wiki/Windows_Registry"> http://en.wikipedia.org/wiki/Windows_Registry</a>
+<p></p>
+
+The Registry is stored in several files; depending upon the version of Windows, there will be different files and different locations for these files, but they are all on the local machine. The user-specific HKEY_CURRENT_USER user registry hive is stored in Ntuser.dat inside the user profile. There is one of these per user; if a user has a roaming profile, then this file will be copied to and from a server at logout and login respectively.
+[edit]Windows NT-based operating systems
+Windows NT-based systems store the registry in a binary hive format which is the same format that can be exported, loaded and unloaded by the Registry Editor in these operating systems. The following Registry files are stored in %SystemRoot%\System32\Config\:
+<li> Sam – HKEY_LOCAL_MACHINE\SAM    </li>
+<li> Security – HKEY_LOCAL_MACHINE\SECURITY  </li>
+<li> Software – HKEY_LOCAL_MACHINE\SOFTWARE  </li>
+<li> System – HKEY_LOCAL_MACHINE\SYSTEM  </li>
+<li> Default – HKEY_USERS\.DEFAULT   </li>
+
+</body>
+</html>

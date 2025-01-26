@@ -1,0 +1,1401 @@
+
+<html>
+
+<title> MagniFile - Dennis Lang - File System Information Help </title>
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<body>
+<h3>Contents</h3>
+<li><a href="#perf">Disk Performance</a></li>
+<li><a href="#cache">Disk Cache</a></li>
+<li><a href="#stats">FileSystem Statistics</a></li>
+<li><a href="#ntfs">NTFS Statistics</a></li>
+<p>
+<hr>
+<p>
+
+Use the toggle buttons at the bottom of the <b>File System Information</b>dialog to turn information on or off.
+Some information can be <b>Updated</b> and any <b>Change</b> will be displayed.
+
+<p>
+
+The Tool bar contains the following commands:
+<blockquote>
+    <li>AutoUpdate - Toggles whether automatic updates occur</li>
+    <li>Refresh - Force immediate update</li>
+    <li>Reset - Clears list and reloads. Any <b>Change</b> values are based off of new starting value. </li>
+    <li>Export - Prompt for filename and Save report as CSV (comma-separated-value, readable by Excel)</li>
+    <li>Print Setup - Open printer setup dialog</li>
+    <li>FitToPage - Toggles whether printing will try to force output to a single page</li>
+    <li>Print - Print network connections report</li>
+</blockquote>
+<p>
+<hr>
+<p>
+
+<a href="http://msdn.microsoft.com/en-us/library/ms809016.aspx"> 
+http://msdn.microsoft.com/en-us/library/ms809016.aspx
+</a>
+
+<a name="perf">
+<h2>Disk Performance</h2>
+
+<b>BytesRead</b>
+<br>Contains a cumulative count of bytes read from the disk since the performance counters were enabled.
+<p>
+
+<b>BytesWritten</b>
+<br>Contains a cumulative count of bytes written to the disk since the performance counters were enabled.
+<p>
+
+<b>ReadTime</b>
+<br>Contains a cumulative time, expressed in increments of 100 nanoseconds, spent on disk reads since the performance counters were enabled.
+<p>
+
+<b>WriteTime</b>
+<br>Contains a cumulative time, expressed in increments of 100 nanoseconds, spent on disk reads since the performance counters were enabled.
+<p>
+
+<b>IdleTime</b>
+<br>Contains a cumulative time, expressed in increments of 100 nanoseconds, since the performance counters were enabled in which there was no disk activity.
+<p>
+
+<b>ReadCount</b>
+<br>Contains the number of disk accesses for reads since the performance counters were enabled.
+<p>
+
+<b>WriteCount</b>
+<br>Contains the number of disk accesses for writes since the performance counters were enabled.
+<p>
+
+<b>QueueDepth</b>
+<br>Contains a snapshot of the number of queued disk I/O requests at the time that the query for performance statistics was performed.
+<p>
+
+<b>SplitCount</b>
+<br>Contains the number of disk accesses by means of an associated IRP since the performance counters were enabled.
+<p>
+
+<b>QueryTime</b>
+<br>Contains a timestamp indicating the system time at the moment that the query took place. System time is a count of 100-nanosecond 
+intervals since January 1, 1601. System time is typically updated approximately every ten milliseconds. For more information about system time, see KeQuerySystemTime.
+<p>
+
+<b>StorageDeviceNumber</b>
+<br>Contains a unique number assigned to every disk or volume across a particular storage type. The storage types are disk.sys, ftdisk.sys, and dmio.sys.
+<p>
+
+<b>StorageManagerName</b>
+<br>Contains an 8-character string that indicates which device driver provided the performance statistics. In Windows 2000, 
+this can be either "LogiDisk" for the driver logidisk.sys or "PhysDisk" for the driver physdisk.sys. These drivers collect 
+performance statistics for devices and physical disks respectively. In Windows XP and later operating systems, this can be
+any of the following three strings: "FTDISK" for the driver ftdisk.sys, "DMIO" for the driver dmio.sys, or "PARTMGR" for 
+the driver partmgr.sys. These three drivers collect performance statistics for basic disk volumes, dynamic disk volumes,
+and physical disks respectively. Note that these strings are 8-character case-sensitive strings with blank fill. For
+example, in the case of the string "FTDISK", the StorageManagerName character array should contain two 
+trailing blanks ("FTDISK"), and in the case of the string "DMIO", the array should contain four trailing blanks ("DMIO"). 
+<p>
+
+<b>Comments</b>
+<br>Counting halts whenever the performance counters are disabled, but the counters are not reset, so the cumulative values 
+assigned to the structure members might potentially reflect disk activity across several enablings and disablings of the counters.
+
+<hr>
+
+<a name="cache">
+<a href="http://msdn.microsoft.com/en-us/library/ms809031.aspx">
+http://msdn.microsoft.com/en-us/library/ms809031.aspx
+</a>
+
+<h2>Disk Cache Information</h2>
+
+The DISK_CACHE_INFORMATION structure is used with the IOCTL_DISK_GET_CACHE_INFORMATION request to retrieve cache information.
+<p>
+<pre><code>
+typedef struct _DISK_CACHE_INFORMATION {
+    BOOLEAN  ParametersSavable;
+    BOOLEAN  ReadCacheEnabled;
+    BOOLEAN  WriteCacheEnabled;
+    DISK_CACHE_RETENTION_PRIORITY  ReadRetentionPriority;
+    DISK_CACHE_RETENTION_PRIORITY  WriteRetentionPriority;
+    USHORT  DisablePrefetchTransferLength;
+    BOOLEAN  PrefetchScalar;
+    union {
+        struct {
+            USHORT  Minimum;
+            USHORT  Maximum;
+            USHORT  MaximumBlocks;
+        } ScalarPrefetch;
+        struct {
+            USHORT  Minimum;
+            USHORT  Maximum;
+        } BlockPrefetch;
+    };
+} DISK_CACHE_INFORMATION, *PDISK_CACHE_INFORMATION;
+</pre></code>
+
+
+<b>ParametersSavable</b>
+<br>Indicates, when set to 1, that the device is capable of saving any parameters in nonvolatile storage.
+<p>
+
+<b>ReadCacheEnabled</b>
+<br>Indicates, when set to 1, that the read cache is enabled.
+<p>
+
+<b>WriteCacheEnabled</b>
+<br>Indicates, when set to 1, that the write cache is enabled.
+<p>
+
+<b>ReadRetentionPriority</b>
+<br>
+Determines the likelihood of various types of data remaining in the cache. By means of this value, for instance, data cached from a READ or WRITE operation might be given a different priority than data cached under other circumstances, such as prefetch operations. Thus a value of EqualPriority indicates that no data is held in the cache on a preferential basis. When ReadRetentionPriority is set to EqualPriority, all types of data have equal access to cache memory. On the other hand, a value of KeepPrefetchedData indicates that a preference is to be given to prefetched data while a value of KeepReadData indicates that a preference is to be given to data cached from a READ operation. For more information about the values that can be assigned to this member see the DISK_CACHE_RETENTION_PRIORITY enumeration.
+<p>
+
+<b>WriteRetentionPriority</b>
+<br>See discussion under ReadRetentionPriority.
+<p>
+
+<b>DisablePrefetchTransferLength</b>
+<br>Disables prefetching. Prefetching might be disabled whenever the number of blocks requested exceeds the value in DisablePrefetchTransferLength. When zero, prefetching is disabled no matter what the size of the block request.
+<p>
+
+<b>PrefetchScalar</b>
+When TRUE, Indicates that ScalarPrefetch.Maximum should be used together with the transfer length to calculate the amount of data that can be prefetched. When FALSE, BlockPrefetch.Maximum will be the maximum number of disk blocks that can be prefetched.
+<p>
+
+<b>ScalarPrefetch.Minimum</b>
+Contains the scalar multiplier of the transfer length of the request when PrefetchScalar is TRUE. If PrefetchScalar is TRUE, the value in ScalarPrefetch.Minimum is multiplied by the transfer length to obtain the minimum amount of data that can be prefetched into the cache on a disk operation.
+<p>
+
+<b>ScalarPrefetch.Maximum</b>
+Contains the scalar multiplier of the transfer length of the request when PrefetchScalar is TRUE. If PrefetchScalar is TRUE, the value in ScalarPrefetch.Maximum is multiplied by the transfer length to obtain the maximum amount of data that can be prefetched into the cache on a disk operation.
+<p>
+
+<b>ScalarPrefetch.MaximumBlocks</b>
+Contains the maximum size, in blocks, of the transfer length.
+<p>
+
+<b>BlockPrefetch.Minimum</b>
+Indicates the minimum amount of data, as an absolute number of disk blocks, that can be prefetched into the cache on a disk operation, when PrefetchScalar is FALSE.
+<p>
+
+<b>BlockPrefetch.Maximum</b>
+Indicates the maximum amount of data, as an absolute number of disk blocks, that can be prefetched into the cache on a disk operation, when PrefetchScalar is FALSE.
+
+
+<p>
+<hr>
+<p>
+<div>
+<h2> SYSTEM_INFO Structure </h2>
+    
+        Contains information about the current computer system. This includes the architecture and type of the processor, the number of processors in the
+        system, the page size, and other such information.
+    
+    <p>
+        <b>
+            Syntax
+        </b>
+    
+    <p>
+        C++
+        
+    
+    <pre><cod>
+    typedef struct _SYSTEM_INFO 
+    {
+        union 
+        {
+            DWORD dwOemId;
+            
+            struct 
+            {
+                WORD wProcessorArchitecture;
+                WORD wReserved;
+            };
+        };
+        DWORD dwPageSize;
+        LPVOID lpMinimumApplicationAddress;
+        LPVOID lpMaximumApplicationAddress;
+        DWORD_PTR dwActiveProcessorMask;
+        DWORD dwNumberOfProcessors;
+        DWORD dwProcessorType;
+        DWORD dwAllocationGranularity;
+        WORD wProcessorLevel;
+        WORD wProcessorRevision;
+    }SYSTEM_INFO;
+    </pre></code>
+    <p>
+        <b>Members</b>
+    <p>
+    <b>dwOemId</b>
+    <br>
+        An obsolete member that is retained for compatibility. Applications should use the <b>wProcessorArchitecture</b> branch of the union.
+        <p>
+        
+    <b>wProcessorArchitecture</b>
+    <br>
+        The processor architecture of the installed operating system. This member can be one of the following values.
+        <p>
+        
+    
+    <table border="1" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td valign="bottom">
+                        <b>Value</b>
+                    
+                </td>
+                <td valign="bottom">
+                        <b>Meaning</b>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_ARCHITECTURE_AMD64  9
+                </td>
+                <td valign="top">
+                        x64 (AMD or Intel)
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_ARCHITECTURE_IA64
+                        6
+                </td>
+                <td valign="top">
+                        Intel Itanium Processor Family (IPF)
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_ARCHITECTURE_INTEL
+                        0
+                </td>
+                <td valign="top">
+                        x86
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_ARCHITECTURE_UNKNOWN
+                        0xffff
+                </td>
+                <td valign="top">
+                        Unknown architecture.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <b>wReserved</b>
+    <br>
+        This member is reserved for future use.
+        <p>
+        
+    
+        <b>dwPageSize</b>
+        <br>
+        The page size and the granularity of page protection and commitment. This is the page size used by the        
+        <b>VirtualAlloc</b>
+        function.
+        <p>
+
+        <b>pMinimumApplicationAddress</b>
+        <br>
+        A pointer to the lowest memory address accessible to applications and dynamic-link libraries (DLLs).
+        <p>
+        
+        <b>lpMaximumApplicationAddress</b>
+        <br>
+        A pointer to the highest memory address accessible to applications and DLLs.    <p>
+        <b>dwActiveProcessorMask</b>
+        <br>A mask representing the set of processors configured into the system. Bit 0 is processor 0; bit 31 is processor 31.
+        <p>
+
+        <b>dwNumberOfProcessors</b>
+        <br>
+        The number of physical processors in the system. To retrieve the number of logical processors, use the           
+        <b>GetLogicalProcessorInformation</b> function.
+        <p>
+
+        <b>dwProcessorType</b>
+        <br>
+        An obsolete member that is retained for compatibility. Use the <b>wProcessorArchitecture</b>, <b>wProcessorLevel</b>, and
+                    <b>wProcessorRevision</b> members to determine the type of processor.
+        <p>
+        
+    
+    <table border="1" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td valign="bottom">
+                <b>Name</b>
+                    
+                </td>
+                <td valign="bottom">
+                        <b>Value</b>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_INTEL_386
+                </td>
+                <td valign="top">
+                        386
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_INTEL_486
+                </td>
+                <td valign="top">
+                        486
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_INTEL_PENTIUM
+                </td>
+                <td valign="top">
+                        586
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_INTEL_IA64
+                </td>
+                <td valign="top">
+                        2200
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        PROCESSOR_AMD_X8664
+                </td>
+                <td valign="top">
+                        8664
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+    
+    <p>
+        <b>dwAllocationGranularity</b>
+        <br>
+            The granularity for the starting address at which virtual memory can be allocated. For more information, see <b>VirtualAlloc</b>.
+    
+    <p>
+        <b>wProcessorLevel</b>
+        <br>
+        The architecture-dependent processor level. It should be used only for display purposes. To determine the feature set of a processor, use the           
+        <b>IsProcessorFeaturePresent</b> function.
+        
+        <p>
+            If <b>wProcessorArchitecture</b> is PROCESSOR_ARCHITECTURE_INTEL, <b>wProcessorLevel</b> is defined by the CPU vendor.
+    <p>
+            If <b>wProcessorArchitecture</b> is PROCESSOR_ARCHITECTURE_IA64, <b>wProcessorLevel</b> is set to 1.
+    <p>
+        <b>wProcessorRevision</b>
+    <p>
+            The architecture-dependent processor revision. The following table shows how the revision value is assembled for each type of processor
+            architecture.
+        <p>
+    
+    <table border="1" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td valign="bottom">
+                        <b>Processor</b>
+                </td>
+                <td valign="bottom">
+                        <b>Value</b>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        Intel Pentium, Cyrix, or NextGen 586
+                </td>
+                <td valign="top">
+                            The high byte is the model and the low byte is the stepping. For example, if the value is <em>xxyy</em>, the model number and
+                            stepping can be displayed as follows:
+                    <p>
+                        Model <em>xx</em>, Stepping <em>yy</em>
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                        Intel 80386 or 80486
+                </td>
+                <td valign="top">
+                        A value of the form <em>xxyz</em>.
+                    <p>
+                            If <em>xx</em> is equal to 0xFF, <em>y</em> - 0xA is the model number, and <em>z</em> is the stepping identifier.
+                    <p>
+                            If <em>xx</em> is not equal to 0xFF, <em>xx</em> + 'A' is the stepping letter and <em>yz</em> is the minor stepping.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+         
+</div>
+
+<p>
+<hr>
+<p>
+
+<h2> Drive Info </h2>
+
+
+
+<table id="memberList2" border=1>
+        <tbody>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+            </tr>
+            <tr>
+                <td>
+                        AvailableFreeSpace
+                    </a>
+                </td>
+                <td>
+                    Indicates the amount of available free space on a drive.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                        DriveFormat
+                    </a>
+                </td>
+                <td>
+                    Gets the name of the file system, such as NTFS or FAT32.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    DriveType
+                </td>
+                <td>
+                    Gets the drive type.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    IsReady
+                </td>
+                <td>
+                    Gets a value indicating whether a drive is ready.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    Gets the name of a drive.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                        RootDirectory
+                </td>
+                <td>
+                    Gets the root directory of a drive.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                        TotalFreeSpace
+                </td>
+                <td>
+                    Gets the total amount of free space available on a drive.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    TotalSize
+                </td>
+                <td>
+                    Gets the total size of storage space on a drive.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                        VolumeLabel
+                </td>
+                <td>
+                    Gets or sets the volume label of a drive.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+<p>
+<hr>
+<p>
+
+<a name="stats">
+<h2> FileSystem Statistics</h2>
+
+Contains statistical information from the file system.
+
+<pre><code>
+struct FILESYSTEM_STATISTICS {
+  WORD  FileSystemType;
+  WORD  Version;
+  DWORD SizeOfCompleteStructure;
+  DWORD UserFileReads;
+  DWORD UserFileReadBytes;
+  DWORD UserDiskReads;
+  DWORD UserFileWrites;
+  DWORD UserFileWriteBytes;
+  DWORD UserDiskWrites;
+  DWORD MetaDataReads;
+  DWORD MetaDataReadBytes;
+  DWORD MetaDataDiskReads;
+  DWORD MetaDataWrites;
+  DWORD MetaDataWriteBytes;
+  DWORD MetaDataDiskWrites;
+};</code></pre>
+
+        <h3>
+            Members
+        </h3>
+        <dl>
+            <dt>
+                <b>FileSystemType</b>
+            </dt>
+            <dd>
+                <p>
+                    The type of file system.
+                
+                <p>
+                    This member can be one of the following values.
+                
+                <table border=1>
+                    <tbody>
+                        <tr>
+                            <th>
+                                Value
+                            </th>
+                            <th>
+                                Meaning
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                        FILESYSTEM_STATISTICS_TYPE_EXFAT
+                                        <br>3
+                            </td>
+                            <td>
+                                    The file system is an exFAT file system.
+                                
+                                <p>
+                                    If this value is set, this structure is followed by an
+                                        <b>EXFAT_STATISTICS</b>
+                                    structure.
+                                
+                                <blockquote>
+                                    <div>
+                                        <b>Windows Vista, Windows Server 2003, and Windows XP/2000: </b>
+                                        This value is not supported until Windows Vista with SP1.
+                                    </div>
+                                </blockquote>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                        FILESYSTEM_STATISTICS_TYPE_FAT
+                                        <br>2
+                            </td>
+                            <td>
+                                    The file system is a FAT file system.
+                                
+                                <p>
+                                    If this value is set, this structure is followed by a
+                                        <b>FAT_STATISTICS</b>
+                                    structure.
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                        FILESYSTEM_STATISTICS_TYPE_NTFS
+                                        <br>1
+                            </td>
+                            <td>
+                                    The file system is the NTFS file system.
+                                
+                                <p>
+                                    If this value is set, this structure is followed by an
+                                        <b>NTFS_STATISTICS</b>
+                                    structure.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                
+            </dd>
+            <dt>
+                <b>Version</b>
+            </dt>
+            <dd>
+                <p>
+                    This member is set to 1 (one).
+            </dd>
+            <dt>
+                <b>SizeOfCompleteStructure</b>
+            </dt>
+            <dd>
+                <p>
+                    The size of this structure plus the size of the file system-specific structure that follows this structure, multiplied by the number of
+                    processors.
+                
+                <p>
+This value must be a multiple of 64. For example, if the size of <b>FILESYSTEM_STATISTICS</b> is 0x38, the size of                    <b>NTFS_STATISTICS</b>is 0xd4, and if there are 2 processors, the buffer allocated must be 0x280.
+                
+                <p>
+                    sizeof(<b>FILESYSTEM_STATISTICS</b>) = 0x38
+                
+                <p>
+                    sizeof(<b>NTFS_STATISTICS</b>) = 0xd4
+                
+                <p>
+                    Total Size = 0x10c
+                
+                <p>
+                    size of the complete structure = 0x140 (which is the aligned length, a multiple of 64)
+                
+                <p>
+                    multiplied by 2 (the number of processors) = 0x280
+                
+            </dd>
+            <dt>
+                <b>UserFileReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on user files.
+                
+            </dd>
+            <dt>
+                <b>UserFileReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from user files.
+                
+            </dd>
+            <dt>
+                <b>UserDiskReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on user files.
+                
+                <p>
+                    This value includes sub-read operations.
+                
+            </dd>
+            <dt>
+                <b>UserFileWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on user files.
+                
+            </dd>
+            <dt>
+                <b>UserFileWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to user files.
+                
+            </dd>
+            <dt>
+                <b>UserDiskWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on user files.
+                
+                <p>
+                    This value includes sub-write operations.
+                
+            </dd>
+            <dt>
+                <b>MetaDataReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on metadata files.
+                
+            </dd>
+            <dt>
+                <b>MetaDataReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from metadata files.
+                
+            </dd>
+            <dt>
+                <b>MetaDataDiskReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on metadata files.
+                
+                <p>
+                    This value includes sub-read operations.
+                
+            </dd>
+            <dt>
+                <b>MetaDataWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on metadata files.
+                
+            </dd>
+            <dt>
+                <b>MetaDataWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to metadata files.
+                
+            </dd>
+            <dt>
+                <b>MetaDataDiskWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on metadata files.
+                
+                <p>
+                    This value includes sub-write operations.
+                
+            </dd>
+        </dl>
+        <h3>
+            Remarks
+        </h3>
+        <p>
+            There are two types of files: user and metadata. User files are available for the user. Metadata files are system files that contain information,
+            which the file system uses for its internal organization.
+        
+        <p>
+            The number of read and write operations measured is the number of paging operations.
+        
+
+
+
+<p>
+<hr>
+<p>
+
+<a name="ntfs">
+<h2> NTFS Statistics </h2>
+
+Contains statistical information from the NTFS file system.
+
+ <pre><code>
+ struct NTFS_STATISTICS {
+  DWORD  LogFileFullExceptions;
+  DWORD  OtherExceptions;
+  DWORD  MftReads;
+  DWORD  MftReadBytes;
+  DWORD  MftWrites;
+  DWORD  MftWriteBytes;
+  struct {
+    WORD Write;
+    WORD Create;
+    WORD SetInfo;
+    WORD Flush;
+  } MftWritesUserLevel;
+  WORD   MftWritesFlushForLogFileFull;
+  WORD   MftWritesLazyWriter;
+  WORD   MftWritesUserRequest;
+  DWORD  Mft2Writes;
+  DWORD  Mft2WriteBytes;
+  struct {
+    WORD Write;
+    WORD Create;
+    WORD SetInfo;
+    WORD Flush;
+  } Mft2WritesUserLevel;
+  WORD   Mft2WritesFlushForLogFileFull;
+  WORD   Mft2WritesLazyWriter;
+  WORD   Mft2WritesUserRequest;
+  DWORD  RootIndexReads;
+  DWORD  RootIndexReadBytes;
+  DWORD  RootIndexWrites;
+  DWORD  RootIndexWriteBytes;
+  DWORD  BitmapReads;
+  DWORD  BitmapReadBytes;
+  DWORD  BitmapWrites;
+  DWORD  BitmapWriteBytes;
+  WORD   BitmapWritesFlushForLogFileFull;
+  WORD   BitmapWritesLazyWriter;
+  WORD   BitmapWritesUserRequest;
+  struct {
+    WORD Write;
+    WORD Create;
+    WORD SetInfo;
+  } BitmapWritesUserLevel;
+  DWORD  MftBitmapReads;
+  DWORD  MftBitmapReadBytes;
+  DWORD  MftBitmapWrites;
+  DWORD  MftBitmapWriteBytes;
+  WORD   MftBitmapWritesFlushForLogFileFull;
+  WORD   MftBitmapWritesLazyWriter;
+  WORD   MftBitmapWritesUserRequest;
+  struct {
+    WORD Write;
+    WORD Create;
+    WORD SetInfo;
+    WORD Flush;
+  } MftBitmapWritesUserLevel;
+  DWORD  UserIndexReads;
+  DWORD  UserIndexReadBytes;
+  DWORD  UserIndexWrites;
+  DWORD  UserIndexWriteBytes;
+  DWORD  LogFileReads;
+  DWORD  LogFileReadBytes;
+  DWORD  LogFileWrites;
+  DWORD  LogFileWriteBytes;
+  struct {
+    DWORD Calls;
+    DWORD Clusters;
+    DWORD Hints;
+    DWORD RunsReturned;
+    DWORD HintsHonored;
+    DWORD HintsClusters;
+    DWORD Cache;
+    DWORD CacheClusters;
+    DWORD CacheMiss;
+    DWORD CacheMissClusters;
+  } Allocate;
+};</code></pre>
+
+        <h3>
+            Members
+        </h3>
+        <dl>
+            <dt>
+                <b>LogFileFullExceptions</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of exceptions generated due to the log file being full.
+                            </dd>
+            <dt>
+                <b>OtherExceptions</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of other exceptions generated.
+                            </dd>
+            <dt>
+                <b>MftReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on the master file table (MFT).
+                            </dd>
+            <dt>
+                <b>MftReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from the MFT.
+                            </dd>
+            <dt>
+                <b>MftWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the MFT.
+                            </dd>
+            <dt>
+                <b>MftWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the MFT.
+                            </dd>
+            <dt>
+                <b>MftWritesUserLevel</b>
+            </dt>
+            <dd>
+                <dl>
+                    <dt>
+                        <b>Write</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT writes due to a write operation.
+                                            </dd>
+                    <dt>
+                        <b>Create</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT writes due to a create operation.
+                                            </dd>
+                    <dt>
+                        <b>SetInfo</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT writes due to setting file information.
+                                            </dd>
+                    <dt>
+                        <b>Flush</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT writes due to a flush operation.
+                                            </dd>
+                </dl>
+            </dd>
+            <dt>
+                <b>MftWritesFlushForLogFileFull</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of flushes of the MFT performed because the log file was full.
+                            </dd>
+            <dt>
+                <b>MftWritesLazyWriter</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of MFT write operations performed by the lazy writer thread.
+                            </dd>
+            <dt>
+                <b>MftWritesUserRequest</b>
+            </dt>
+            <dd>
+                <p>
+                    Reserved.
+                            </dd>
+            <dt>
+                <b>Mft2Writes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the MFT mirror.
+                            </dd>
+            <dt>
+                <b>Mft2WriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the MFT mirror.
+                            </dd>
+            <dt>
+                <b>Mft2WritesUserLevel</b>
+            </dt>
+            <dd>
+                <dl>
+                    <dt>
+                        <b>Write</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT mirror writes due to a write operation.
+                                            </dd>
+                    <dt>
+                        <b>Create</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT mirror writes due to a create operation.
+                                            </dd>
+                    <dt>
+                        <b>SetInfo</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT mirror writes due to setting file information.
+                                            </dd>
+                    <dt>
+                        <b>Flush</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT mirror writes due to a flush operation.
+                                            </dd>
+                </dl>
+            </dd>
+            <dt>
+                <b>Mft2WritesFlushForLogFileFull</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of flushes of the MFT mirror performed because the log file was full.
+                            </dd>
+            <dt>
+                <b>Mft2WritesLazyWriter</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of MFT mirror write operations performed by the lazy writer thread.
+                            </dd>
+            <dt>
+                <b>Mft2WritesUserRequest</b>
+            </dt>
+            <dd>
+                <p>
+                    Reserved.
+                            </dd>
+            <dt>
+                <b>RootIndexReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on the root index.
+                            </dd>
+            <dt>
+                <b>RootIndexReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from the root index.
+                            </dd>
+            <dt>
+                <b>RootIndexWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the root index.
+                            </dd>
+            <dt>
+                <b>RootIndexWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the root index.
+                            </dd>
+            <dt>
+                <b>BitmapReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on the cluster allocation bitmap.
+                            </dd>
+            <dt>
+                <b>BitmapReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from the cluster allocation bitmap.
+                            </dd>
+            <dt>
+                <b>BitmapWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the cluster allocation bitmap.
+                            </dd>
+            <dt>
+                <b>BitmapWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the cluster allocation bitmap.
+                            </dd>
+            <dt>
+                <b>BitmapWritesFlushForLogFileFull</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of flushes of the bitmap performed because the log file was full.
+                            </dd>
+            <dt>
+                <b>BitmapWritesLazyWriter</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bitmap write operations performed by the lazy writer thread.
+                            </dd>
+            <dt>
+                <b>BitmapWritesUserRequest</b>
+            </dt>
+            <dd>
+                <p>
+                    Reserved.
+                            </dd>
+            <dt>
+                <b>BitmapWritesUserLevel</b>
+            </dt>
+            <dd>
+                <dl>
+                    <dt>
+                        <b>Write</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of bitmap writes due to a write operation.
+                                            </dd>
+                    <dt>
+                        <b>Create</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of bitmap writes due to a create operation.
+                                            </dd>
+                    <dt>
+                        <b>SetInfo</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of bitmap writes due to setting file information.
+                                            </dd>
+                </dl>
+            </dd>
+            <dt>
+                <b>MftBitmapReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on the MFT bitmap.
+                            </dd>
+            <dt>
+                <b>MftBitmapReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from the MFT bitmap.
+                            </dd>
+            <dt>
+                <b>MftBitmapWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the MFT bitmap.
+                            </dd>
+            <dt>
+                <b>MftBitmapWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the MFT bitmap.
+                            </dd>
+            <dt>
+                <b>MftBitmapWritesFlushForLogFileFull</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of flushes of the MFT bitmap performed because the log file was full.
+                            </dd>
+            <dt>
+                <b>MftBitmapWritesLazyWriter</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of MFT bitmap write operations performed by the lazy writer thread.
+                            </dd>
+            <dt>
+                <b>MftBitmapWritesUserRequest</b>
+            </dt>
+            <dd>
+                <p>
+                    Reserved.
+                            </dd>
+            <dt>
+                <b>MftBitmapWritesUserLevel</b>
+            </dt>
+            <dd>
+                <dl>
+                    <dt>
+                        <b>Write</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of MFT bitmap writes due to a write operation.
+                                            </dd>
+                    <dt>
+                        <b>Create</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of bitmap writes due to a create operation.
+                                            </dd>
+                    <dt>
+                        <b>SetInfo</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of bitmap writes due to setting file information.
+                                            </dd>
+                    <dt>
+                        <b>Flush</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of bitmap writes due to a flush operation.
+                                            </dd>
+                </dl>
+            </dd>
+            <dt>
+                <b>UserIndexReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on the user index.
+                            </dd>
+            <dt>
+                <b>UserIndexReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from the user index.
+                            </dd>
+            <dt>
+                <b>UserIndexWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the user index.
+                            </dd>
+            <dt>
+                <b>UserIndexWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the user index.
+                            </dd>
+            <dt>
+                <b>LogFileReads</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of read operations on the log file.
+                            </dd>
+            <dt>
+                <b>LogFileReadBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes read from the log file.
+                            </dd>
+            <dt>
+                <b>LogFileWrites</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of write operations on the log file.
+                            </dd>
+            <dt>
+                <b>LogFileWriteBytes</b>
+            </dt>
+            <dd>
+                <p>
+                    The number of bytes written to the log file.
+                            </dd>
+            <dt>
+                <b>Allocate</b>
+            </dt>
+            <dd>
+                <dl>
+                    <dt>
+                        <b>Calls</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of individual calls to allocate clusters.
+                                            </dd>
+                    <dt>
+                        <b>Clusters</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of clusters allocated.
+                                            </dd>
+                    <dt>
+                        <b>Hints</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of times a hint was specified.
+                                            </dd>
+                    <dt>
+                        <b>RunsReturned</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of runs used to satisfy all the requests.
+                                            </dd>
+                    <dt>
+                        <b>HintsHonored</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of times the hint was useful.
+                                            </dd>
+                    <dt>
+                        <b>HintsClusters</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of clusters allocated through the hint.
+                                            </dd>
+                    <dt>
+                        <b>Cache</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of times the cache was useful other than the hint.
+                                            </dd>
+                    <dt>
+                        <b>CacheClusters</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of clusters allocated through the cache other than the hint.
+                                            </dd>
+                    <dt>
+                        <b>CacheMiss</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of times the cache was not useful.
+                                            </dd>
+                    <dt>
+                        <b>CacheMissClusters</b>
+                    </dt>
+                    <dd>
+                        <p>
+                            The number of clusters allocated without the cache.
+                                            </dd>
+                </dl>
+            </dd>
+        </dl>
+        <h3>
+            Remarks
+        </h3>
+        <p>
+            The MFT, MFT mirror, root index, user index, bitmap, and MFT bitmap are counted as metadata files. The log file is not counted as a metadata file.
+                <p>
+            The number of read and write operations measured is the number of paging operations.
+        
+</body>
+</html>

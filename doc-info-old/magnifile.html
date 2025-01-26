@@ -1,0 +1,221 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+
+<head>
+<title>MagniFile By Dennis Lang 2009</title>
+</head>
+
+<body>
+
+<h2>MagniFile - Open File Handles and File Information</h2>
+
+
+<span id="ArticleContent">
+<ul class="download">
+<b>MagniFile</b> C# source code and executables for:
+<li><a href="magnifile/magnifile-v3.4-xp32-exe.zip">Download EXE (Xp32) - 408 KB</a> </li>
+<li><a href="magnifile/magnifile-v3.4-xp64-exe.zip">Download EXE (Xp64) - 408 KB</a> </li>
+<li><a href="magnifile/magnifile-v3.4-src.zip">Download source - 492 KB</a> </li>
+
+<p>
+<b>Mfile</b> C++/C source code and executables for command line tool:
+<li><a href="magnifile/mfile-v3.4-xp32-exe.zip">Download EXE (Xp32) - 29 KB</a> </li>
+<li><a href="magnifile/mfile-v3.4-xp64-exe.zip">Download EXE (Xp64) - 29 KB</a> </li>
+<li><a href="magnifile/mfile-v3.4-src.zip">Download source - 28 KB</a> </li>
+
+</ul>
+
+<img alt="magnifile" src="magnifile/magnifile.png" /> 
+<h2>Introduction</h2>
+
+<p>This project started out as a tool to monitor open handles to isolate a handle leak and grew into a stand-alone application. 
+MagniFile starts by displaying the active processes in the top panel. 
+When you select one or more processes, it will try to display the open handle information in the bottom panel.
+Both panels support <b>printing</b>, <b>exporting</b> and <b>logging</b>.  If auto-update and auto-logging is enabled, the information will be logged every time the display updates.
+</p> 
+
+<p>
+
+There is nothing new in this program, it is a port of well-know logic in the unmanaged world to access system information.
+The only twist is I made it available to the .NET world.
+The program can be built to run on XP32 or XP64.
+<p>
+I also provide a simple C++ command line program <b>Mfile</b> which duplicates some of the functionality of <b>MagniFile</b>.
+<p>
+
+<b>Feature Summary:</b>
+
+<ol>
+<li>Display Process list
+<li>Display Open Handle list by process
+<li>Process, Handle and Statistic lists can be exported and printed </li>
+<li>Automatic update/refresh (rate selectable)</li>
+<li>Manually or automatically Log process and/or handle information. 
+<li>Both process and handle have a secondary view to display summary information collected over time (short term version of log file).
+<li> Handle specific features:</li>
+<ol>
+<li>Tries to display description per handle (ex: file name, directory name, registry key name)</li>
+<li>List can be pruned by handle type (file, dir, event, key, port, ...) </li>
+<li>List can be pruned to display only those with valid descriptions (removes useless handle info)</li>
+</ol>
+
+
+<li>Auxiliary Dialogs
+<ol>
+<li>Display Disk, Drive, NTFS statistic information</li>
+<li>Display NTFS disk cluster allocation as an image </li>
+<li>Display File disk cluster allocation as an image </li>
+</ol>
+
+<li>All dialogs can be  resized (I hate fixed size dialogs) </li>
+<li>Major dialogs are not modal (I hate modal dialogs)</li>
+<li>List columns can be sorted (two level column sort selection) </li>
+
+
+
+</ol>
+
+<hr>
+<h2>How To Use</h2>
+
+Both <b>MagniFile</b> and <b>Mfile</b> access a lot of system functions. Make sure you download or build the correct version for your OS (Xp/32 or Xp/64).
+After you launch MagniFile it should start to update the process list every 5 seconds.  Any new process is backlit in green and dead ones in red.
+When you select one or more processes, it tries to enumerate and describe each handle in the lower panel.  Some privileged processes will display no information.
+Some handle queries time-out and produce a partial handle list.
+Lastly, some handles will produce no useful description (permission problems).
+<p>
+Once you get a list of handles, you can use the <b>View...</b> menu to prune the display by type and description and/or set a group by order.
+If you enable <b>group by</b> mode, the sorting stops working.
+<p>
+<img src="magnifile/group-by.png">
+<p>
+Both the Process and Handle lists support column sorting.  
+In addition to the normal sorting, if a duplicate is found in the primary sort column, it will defer to the secondary sort column (previously select sort column).
+The primary sort column has the large triangle/arrow while the secondary has the smaller triangle/arrow.
+<p>
+The process list has a column labeled <b>Log</b>.  If you click in this column the <b>Log</b> tag will cycle on or off.  
+If one or more <b>Log</b> tags are set, then only those process lines will be sent to the log file during a log update. 
+<p>
+<img src="magnifile/log-column.png">
+<p>
+
+
+In addition to the <b>Detail</b> process view, there is a <b>Summary</b> view. The summary view contains those lines marked 
+with the <b>Log</b> tag.  The summary is updated every time the detail view is refreshed. 
+The <b>Log</b> tag effects both the process summary view and process logging. 
+The summary views will automatically trim their lists to not exceed 100 elements.  
+<p>
+<img alt="magnifile" src="magnifile/view-summary.png" /> 
+<p>
+<p>
+The Process, Handle and Statistic lists support automatic update/refresh,  manual exporting and printing.   
+The Process and Handle lists provide several update rates via the <b>File</b> menu.
+<p>
+<img src="magnifile/file-menu.png">
+<p>
+
+<hr>
+<h2>Disk Information</h2>
+If you  need more information, you can click the left icon <img src="magnifile/stat-icon.png"> to get a new dialog which displays various file system information.
+Some of the information will display the change between the start value and the current value.
+<p>
+<img src="magnifile/disk-stats.png">
+<p>
+Use the check boxes at the bottom to change the display information.
+Press the <b>Help</b> button to get an explanation of the information.
+
+<p>
+<img src="magnifile/help.png">
+<p>
+
+<p>
+
+<hr>
+<h2>Disk and Files Allocation</h2>
+<p>
+If you want to see a disk cluster allocation image, press the right icon <img src="magnifile/cluster-icon.png">.  
+Nothing special, just an image which shows which clusters are allocated.
+You can overlay a file allocation by:
+<ul>
+<li> Browsing for a file
+<li> Press <b>SysFile</b> button and double clicking on a system file
+<li> Right clicking on file handle entry.
+</ul>
+
+<p>
+<img src="magnifile/file-allocation.png">
+<p>
+The file allocation is drawn in the image overlay as small circles. 
+The start and end of the file allocation chain is drawn in a larger orange circle. 
+Here is a zoomed in example showing part of the disk cluster allocation image map, with a file allocation overlay. 
+The file's starting cluster is marked with the larger orange circle. 
+The other file allocation clusters are marked with smaller circles with a tight sequence appearing as a thick colored bar. 
+This example shows two fragments with one large sequential chain.
+<p>
+<img src="magnifile/zoom-allocation.png">
+
+<p>
+To help inspect NTFS system files, press the <b>SysFiles</b> button to populate a list of system files. Double click on a file name to view its allocation.
+<p>
+<img src="magnifile/sys-allocation.png">
+<p>
+The <b>SaveAs</b> button will allow you to save a screen capture of the dialog to a disk file.
+<p>
+ 
+<hr>
+<h2> Art Work</h2>
+
+The artwork uses the microscope as its metaphor to represent the quest for file information.  The top splash banner is made of amoebas and the
+disk cluster splash screen is a DNA image. The application name <b>MagniFile</b> is a play on the words <b>Magnifier</b> and <b>File</b>  
+
+<p>
+<img src="magnifile/about.png">
+<p>
+
+<h2>Points of Interest</h2>
+ 
+When you inspect the code you will find the following items:
+
+<li> A bunch of unmanaged API's ported to C#
+<li> Generic ListView printing and exporting.
+<li> Two tier ListView column sorting
+<li> Statistic Dialog draws title twice to give drop shadow effect
+<li> Statistic information is extracted using <b>Reflection</b> 
+<li> Program works in XP32 and XP64
+<li> Logging and exporting save information in CSV format, making it easy to process and manipulate with programs such as Excel (graph handle count).
+
+
+
+<h2>History</h2>
+
+
+<ul>
+<li>Oct 3, 2009 v2.3 
+<ul>                                                                                                             
+<li> Got File allocation map working </li>
+</ul>
+
+<li>Oct 18, 2009 v3.4 
+<ul>                                                                                                             
+<li> Created c++ command line tool and various cleanup. </li>
+</ul>
+
+
+</ul>
+
+Additional information is available on my website 
+
+<a href="https://landenlabs.com/"> https://landenlabs.com/  </a>
+
+
+</span>
+<!-- End Article -->
+
+
+
+
+</div> 
+</body>
+</html>

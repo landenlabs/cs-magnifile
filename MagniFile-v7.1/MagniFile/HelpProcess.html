@@ -1,0 +1,52 @@
+<html>
+
+<title> MagniFile - Dennis Lang - Process Help </title>
+
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<body>
+
+<h2> Process  Help </h2>
+
+Display information about process, such as (time, memory, i/o threads and modules).
+
+<table border=1>
+
+<tr><td>BasePriority</td><td>The BasePriority of the process is the starting priority for threads created within the associated process.
+    <br>
+    <table>
+    <tr><td>BasePriority</td><td>PriorityClass</td></tr>
+    <tr><td>4</td><td>Idle</td></tr>
+    <tr><td>8</td><td>Normal</td></tr>
+    <tr><td>13</td><td>High</td></tr>
+    <tr><td>25</td><td>RealTime</td></tr>
+    </table>
+</td></tr>
+<tr><td>Handle Count</td>Number of open handles (files, directories, events, threads, etc)</tr>
+
+<tr><td>Id</td><td>Unique Id to identify running process</td></tr>
+
+
+<tr><td>PrivateMem</td><td>The number of bytes allocated by the associated process that cannot be shared with other processes.</td></tr>
+<tr><td>WorkSet</td><td>The working set of a program is a collection of those pages in its virtual address space that have been recently referenced. It includes both shared and private data. The shared data includes pages that contain all instructions your application executes, including those in your DLLs and the system DLLs. As the working set size increases, memory demand increases.</td></tr>
+<tr><td>WorkSet(Peak)</td><td>Peak (maximum) WorkSet</td></tr>
+<tr><td>Virtual Size</td><td>The value returned by this property represents the current size of virtual memory used by the process. The operating system maps the virtual address space for each process either to pages loaded in physical memory, or to pages stored in the virtual memory paging file on disk.</td></tr>
+<tr><td>Virtual (Peak) Size</td><td>Peak (maximum) virtual size </td></tr>
+<tr><td>Paged Size</td><td>The amount of memory, in bytes, allocated by the associated process that can be written to the virtual memory paging file.</td></tr>
+<tr><td>Paged (Peak) Size</td><td>Peak (maximum) paged memory</td></tr>
+
+<tr><td colspan=2></td></tr>
+<tr><td>#Threads</td><td>The number of operating system handles the process has opened.</td></tr>
+<tr><td>#Modules</td><td>Currently not populated</td></tr>
+
+<tr><td colspan=2></td></tr>
+<tr><td>#Read I/O</td><td>Running total #Read transactions</td></tr>
+<tr><td>#Write I/O</td><td>Running total #Write transactions </td></tr>
+<tr><td>#Other I/O</td><td>Running total number of other I/O transactions (seek, ioctl, ...)</td></tr>
+</table>
+
+</body>
+</html>

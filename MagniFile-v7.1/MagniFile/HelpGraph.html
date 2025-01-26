@@ -1,0 +1,120 @@
+<html>
+
+<title> MagniFile - Dennis Lang - Graph Help </title>
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<body>
+
+<h2> Graph Help </h2>
+
+<li> <a href="#pgraph"> Process Graph </a>
+<li> <a href="#sgraph"> System Graph </a>
+<li> <a href="#key"> Key bindings </a>
+<li> <a href="#mouse"> Mouse actions </a>
+
+<hr>
+<a name="pgraph">
+
+Prior to using the process graphing feature you must enable logging on one or more Processes in the main window.
+Click on the left <b>Log</b> column in the main process window to toggle logging on and off.
+<br>Optionally Press the <b>Summary</b> button to view the Log 'summary' data available for graphing.
+<p>
+Select items on the <b>ProcData</b> tab to graph process specific data.
+<p>
+<a href="http://msdn.microsoft.com/en-us/library/system.diagnostics.process_properties.aspx">
+http://msdn.microsoft.com/en-us/library/system.diagnostics.process_properties.aspx</a>
+
+<table border=1>
+<tr><td>#Read I/O</td><td>Running total #Read transactions</td></tr>
+<tr><td>#Write I/O</td><td>Running total #Write transactions </td></tr>
+<tr><td>#Other I/O</td><td>Running total number of other I/O transactions (seek, ioctl, ...)</td></tr>
+<tr><td>I/O Chg</td><td>Change of the total I/O (#read+#write+#other) between updates</td></tr>
+<tr><td>#Handles</td>Number of open handles (files, directories, events, threads, etc)</tr>
+<tr><td>TotalTm</td><td>Elapsed execution time</td></tr>
+<tr><td>UserTm</td><td>Total execution time in 'user' code</td></tr>
+<tr><td>PrivateMem</td><td>The number of bytes allocated by the associated process that cannot be shared with other processes.</td></tr>
+<tr><td>WorkSet</td><td>The working set of a program is a collection of those pages in its virtual address space that have been recently referenced. It includes both shared and private data. The shared data includes pages that contain all instructions your application executes, including those in your DLLs and the system DLLs. As the working set size increases, memory demand increases.</td></tr>
+<tr><td>WorkSet(Peak)</td><td>Peak (maximum) WorkSet</td></tr>
+<tr><td>Virtual Size</td><td>The value returned by this property represents the current size of virtual memory used by the process. The operating system maps the virtual address space for each process either to pages loaded in physical memory, or to pages stored in the virtual memory paging file on disk.</td></tr>
+<tr><td>Virtual (Peak) Size</td><td>Peak (maximum) virtual size </td></tr>
+<tr><td>Paged Size</td><td>The amount of memory, in bytes, allocated by the associated process that can be written to the virtual memory paging file.</td></tr>
+<tr><td>Paged (Peak) Size</td><td>Peak (maximum) paged memory</td></tr>
+<tr><td>#Threads</td><td>The number of operating system handles the process has opened.</td></tr>
+<tr><td>#Modules</td><td>Currently not populated</td></tr>
+</table>
+<p>
+<hr>
+<p>
+
+<a name="sgraph">
+
+Select items on the <b>SysData</b> tab to graph system performance data.
+<p>
+<table border=1>
+<tr><td colspan=2><b>Disk</b></td></tr>
+<tr><td>Queue Depth</td>            <td>Number of disk I/O requests queued, value >1 indicated heavey I/O</td></tr>
+<tr><td>#Reads</td>                 <td>Total number of disk Read transactions</td></tr>
+<tr><td>#Writes</td>                <td>Total number of disk Write transactions</td></tr>
+<tr><td>Read Bytes</td>             <td>Total number of bytes read to disk</td></tr>
+<tr><td>Write Bytes</td>            <td>Total number of bytes written to disk</td></tr>
+<tr><td colspan=2><b>CPU</b></td></tr>
+<tr><td>Context Switches</td>       <td>Delta number of context switches. Context switch occurs when a multiple tasks share a cpu. Each take turns</td></tr>
+<tr><td>DPC Count</td>              <td>Delta DPC (Delayed Procedure Call) count. DPC is used by kernel and device drivers. DPC count should be low for best performance.  </td></tr>
+<tr><td>&nbsp;</td>                 <td></td></tr>
+<tr><td colspan=2><b>Network</b></td></tr>
+<tr><td>Tcp Segments Received</td>  <td>Total read transactions</td></tr>
+<tr><td>Tcp Segments Sent</td>      <td>Total write transactions</td></tr>
+<tr><td>Tcp Segments Resent</td>    <td>Total resend (due to erros)</td></tr>
+<tr><td>Udp Datagrams Receive</td>  <td>Total read transactions</td></tr>
+<tr><td>Udp Datagrams Sent</td>     <td>Total write transactions</td></tr>
+<tr><td>Udp Datagrams Discarded</td><td>Total read transactions with errors</td></tr>
+</table>
+
+
+<p>
+<hr>
+<p>
+
+<a name="key">
+
+
+When you have focus over the <b>Legend</b> area, you can press the following keys:
+
+<table border=1>
+<tr><td>Control A<td>Select All series</tr>
+<tr><td>Delete   <td>Delete <b>selected</b> series</tr>
+<tr><td>C        <td>Clear points in <b>selected</b> series</tr>
+<tr><td>M        <td>Set offset to minimum value (all series) </tr>
+<tr><td>N        <td>Normalize all series, set offset and scale to hit range 0..100</tr>
+<tr><td>R        <td>Reset scale to 1.0 and offset to 0 </tr>
+</table>
+
+<p>
+<hr>
+<p>
+
+<a name="mouse">
+
+<b>Legend:</b><br>
+<li>When you select a series in the legend panel, it will highlight the series in the graph panel.
+
+<li>When you click on the Width, Scale or Offset columns it will open a text box.
+You can enter a number or drag the mouse while the left button is down to adjust the value.
+
+<li>Click on the Axis or Type column will open a combo box to select values.
+<p>
+<b>Chart:</b><br>
+<li>When you left click over an axis, the text will turn red and you can drag to change the maximum domain.
+<li>When you right click over an axis, you can drag its domain up and down.
+<li>When you right click over the chart you can drag the time line left and right.
+<li>When you click on a series it will draw a dot on the nearest series value and display a label. 
+The label will show the raw value and the adjusted value.  The adjusted value is the result of applying any scale or offset.
+<b> adjValue = value * scale + offset </b> 
+
+
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<html>
+
+<title> MagniFile - Dennis Lang - Monitor FileSys Events Help </title>
+
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<body>
+
+<h2> Monitor File Events  Help </h2>
+
+<b>Monitor File Events</b> allows you to monitor a File System for major file and directory events.
+The interface is split into two panels.  The upper panel contains the monitor commands.
+The lower panel contains the captured events.
+
+<p>
+File or Directory events which can be monitored:
+<blockquote>
+<li> Contents <b>changed</b> (data written)</li>
+<li> <b>Creation</b> </li>
+<li> <b>Deletion</b> </li>
+<li> <b>Renamed</b> </li>
+</blockquote>
+<p>
+
+Use the <b>Add</b> and <b>Delete</b> buttons to add and remove event monitoring commands.
+Each monitor command contains the following information:
+<blockquote>
+    <table style="border-collapse: collapse; border: 2px solid;">
+    <tr style="border: 1px solid"><td><b>Enable</b></td><td> Checked to enable, unchecked to disable</td></tr>
+    <tr style="border: 1px solid"><td><b>Base Directory</b></td><td> Starting point to monitor (see subdir)</td></tr>
+    <tr style="border: 1px solid"><td><b>Subdir</b></td><td>Check to enable monitoring of base directory and all subdirectories below it</td></tr>
+    <tr style="border: 1px solid"><td><b>Pattern</b></td><td>File name or file pattern.<br>  
+    A pattern uses * or ? to mark undefined characters.<br> 
+    Ex:  *.txt matches on all files which end in .txt<br>
+    Any non-pattern matches an exact match.<br />
+    Ex:  foo.dat  matches exactly the file foo.dat.
+    </td></tr>
+    <tr style="border: 1px solid"><td><b>Change</b></td><td>Checked to monitor for any changes (writes or updates)</td></tr>
+    <tr style="border: 1px solid"><td><b>Create</b></td><td>Checked to monitor creation. <br>Fire when a matching object is created</td></tr>
+    <tr style="border: 1px solid"><td><b>Delete</b></td><td>Checked to monitor deletion. <br>Fire when a matching object is deleted</td></tr>
+    <tr style="border: 1px solid"><td><b>Rename</b></td><td>Checked to monitor name changes. <br>Fire when a matching object name is changed</td></tr>
+    <tr style="border: 1px solid"><td><b>Color</b></td><td>This is a cosmetic attribute. <br> It is used to help associated event reports with the event monitoring command.  </td></tr>
+    </table>
+</blockquote>
+ 
+When a monitored event occurs it is reported in the lower panel.
+Similar file events are reported on a single line, with the <b>Count</b> column tracking the duplicate events.
+Only 100 events are kept.  Any additional events causes older report lines to be deleted.
+Each captured event contains the following information:
+
+<blockquote>
+    <table style="border: 2px solid">
+    <tr><td><b>First</b></td><td>Time of the first event on this file or directory</td></tr>
+    <tr><td><b>Last</b></td><td>Time of last event on this file or directory</td></tr>
+    <tr><td><b>Count</b></td><td>Count of events on this file for directory</td></tr>
+    <tr><td><b>Color</b></td><td>Color associated with monitor command which captured this event.</td></tr>
+    <tr><td><b>Event</b></td><td>Description of event which was captured (Change, Create, Delete, Rename)</td></tr>
+    <tr><td><b>Directory</b></td><td>Directory path of object which caused event</td></tr>
+    <tr><td><b>Name</b></td><td>Name part of object which caused event</td></tr>
+    <tr><td><b>Ext</b></td><td>Extension part of object which caused event</td></tr>
+    <tr><td><b>Size</b></td><td>Size of object at time of event (only for files)</td></tr>
+    <tr><td><b>Modified</b></td><td>Time of last modification</td></tr>
+    <tr><td><b>Attributes</b></td><td>Access attributes of object</td></tr>
+    <tr><td><b>Owner</b></td><td>Owner of object</td></tr>
+    </table>
+</blockquote>  
+
+You can <b>Right Click</b> over entires in the lower panel to popup additional commands such as:
+
+<blockquote>
+    <table style="border:2px solid">
+    <tr><td><b>Clear All</b></td><td>Clear (remove) all monitored event report lines</td></tr>
+    <tr><td><b>Clear Selected</b></td><td>Clear (remove) all selected event report lines</td> </tr>
+    <tr><td><b>Launch Explorer</b></td><td>Launch <b>Windows Explorer</b> with the selected object defining the directory to browse.</td></tr>
+    <tr><td><b>Launch cmd.exe</b></td><td>Launch <b>DOS command prompt</b> with the selected object defining the directory to browse.</td></tr>
+    </table>
+</blockquote>
+
+</body>
+</html>

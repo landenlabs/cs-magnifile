@@ -1,0 +1,316 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+
+<html>
+<style>
+BODY {
+    color: #ffffff;
+}
+.indent {
+    padding-left: 50pt;
+    padding-right: 50pt;
+    font-size: 110%;
+}
+.indentBorder {
+    padding-left: 50pt;
+    padding-right: 50pt;
+    font-size: 110%;
+    border-color: grey;
+    border-width: 1;
+    border-style: solid;
+}
+
+
+LI { color:yellow; }
+H2 { color:Orange; }
+RED { color:Red; font-weight:700}
+PRE { background-color:gray; margin:30px; border:1px solid blue; }
+
+</style>
+
+<title>Dennis Lang - MagniFile - Csharp</title>
+<BODY bgcolor="#404040" vlink="#f0fff0" hlink="#80ff80" alink="#80ff00" link=#ffffff>
+
+<table>
+<tr>
+  <td>
+  <img src="magnifile-icon.png">
+  
+
+  <td> 
+    <span style="font-size:x-large; font-weight:bold;";> Welcome to Dennis Lang's</span> <br>
+    <span style="font-size:large; color:#ff0000;"> Source Code and Performance Metrics </span><br>
+    <p>
+    landenlabs.app<b>@</b>gmail.com <br>Linkedin: http://www.linkedin.com/pub/1/119/293 <p>
+    Updated: 12-Apr-2010
+    <p>
+    <a href="https://landenlabs.com/index.html" color=blue > [ To Main Page ] </a>
+
+
+</table>
+
+<a name=top>
+<p>
+<hr>
+<p>
+<a name=csMagniFile>
+
+
+<h2>MagniFile v6.3 (April 2010)</h2>
+
+
+
+<p>This project started out as a tool to monitor open handles to isolate a handle leak and grew into a stand-alone application. 
+MagniFile starts by displaying the active processes in the top panel. 
+When you select one or more processes, it will try to display the open handle information in the bottom panel.
+Both panels support <b>printing</b>, <b>exporting</b> and <b>logging</b>.  If auto-update and auto-logging is enabled, the information will be logged every time the display updates.
+</p> 
+
+<p>
+
+There is nothing new in this program, it is a port of well-know logic in the unmanaged world to access system information.
+The only twist is I made it available to the .NET world.
+The program can be built to run on XP32 or XP64.
+<p>
+I also provide a simple C++ command line program <b>Mfile</b> which duplicates some of the functionality of <b>MagniFile</b>.
+<p>
+
+<p>
+<img alt="magnfile" src="magnifile.png" /> 
+<p>
+
+<b>Feature Summary:</b>
+
+<ol>
+<li>Display Process list
+<li>Display Open Handle list by process
+<li>Process, Handle and Statistic lists can be exported and printed </li>
+<li>Automatic update/refresh (rate selectable)</li>
+<li>Manually or automatically Log process and/or handle information. 
+<li>Both process and handle have a secondary view to display summary information collected over time (short term version of log file).
+<li> Handle specific features:</li>
+<ol>
+<li>Tries to display description per handle (ex: file name, directory name, registry key name)</li>
+<li>List can be pruned by handle type (file, dir, event, key, port, ...) </li>
+<li>List can be pruned to display only those with valid descriptions (removes useless handle info)</li>
+</ol>
+
+
+<li>Auxiliary Dialogs
+<ol>
+<li>Display Disk, Drive, NTFS statistic information</li>
+<li>Display NTFS disk cluster allocation as an image </li>
+<li>Display File disk cluster allocation as an image </li>
+</ol>
+
+<li>All dialogs can be  resized (I hate fixed size dialogs) </li>
+<li>Major dialogs are not modal (I hate modal dialogs)</li>
+<li>List columns can be sorted (two level column sort selection) </li>
+
+</ol>
+
+
+<h2>How To Use</h2>
+
+Both <b>MagniFile</b> and <b>Mfile</b> access a lot of system functions. Make sure you download or build the correct version for your OS (Xp/32 or Xp/64).
+After you launch MagniFile it should start to update the process list every 5 seconds.  Any new process is backlit in green and dead ones in red.
+When you select one or more processes, it tries to enumerate and describe each handle in the lower panel.  Some privileged processes will display no information.
+Some handle queries time-out and produce a partial handle list.
+Lastly, some handles will produce no useful description (permission problems).
+<p>
+Once you get a list of handles, you can use the <b>View...</b> menu to prune the display by type and description and/or set a group by order.
+If you enable <b>group by</b> mode, the sorting stops working.
+<p>
+<img src="group-by.png">
+<p>
+Both the Process and Handle lists support column sorting.  
+In addition to the normal sorting, if a duplicate is found in the primary sort column, it will defer to the secondary sort column (previously select sort column).
+The primary sort column has the large triangle/arrow while the secondary has the smaller triangle/arrow.
+<p>
+The process list has a column labeled <b>Log</b>.  If you click in this column the <b>Log</b> tag will cycle on or off.  
+If one or more <b>Log</b> tags are set, then only those process lines will be sent to the log file during a log update. 
+<p>
+<img src="log-column.png">
+<p>
+
+
+In addition to the <b>Detail</b> process view, there is a <b>Summary</b> view. The summary view contains those lines marked 
+with the <b>Log</b> tag.  The summary is updated every time the detail view is refreshed. 
+The <b>Log</b> tag effects both the process summary view and process logging. 
+The summary views will automatically trim their lists to not exceed 100 elements.  
+<p>
+<img alt="magnifile" src="view-summary.png" /> 
+<p>
+<p>
+The Process, Handle and Statistic lists support automatic update/refresh,  manual exporting and printing.   
+The Process and Handle lists provide several update rates via the <b>File</b> menu.
+<p>
+<img src="file-menu.png">
+<p>
+
+<hr>
+<h2>Disk Information</h2>
+If you  need more information, you can click the left icon <img src="stat-icon.png"> to get a new dialog which displays various file system information.
+Some of the information will display the change between the start value and the current value.
+<p>
+<img src="disk-stats.png">
+<p>
+Use the check boxes at the bottom to change the display information.
+Press the <b>Help</b> button to get an explanation of the information.
+
+
+<p>
+<img src="help.png">
+<p>
+
+<p>
+
+<hr>
+<h2>Disk and Files Allocation</h2>
+<p>
+If you want to see a disk cluster allocation image, press the right icon <img src="cluster-icon.png">.  
+Nothing special, just an image which shows which clusters are allocated.
+You can overlay a file allocation by:
+<ul>
+<li> Browsing for a file
+<li> Press <b>SysFile</b> button and double clicking on a system file
+<li> Right clicking on file handle entry.
+</ul>
+
+<p>
+<img src="file-allocation.png">
+<p>
+The file allocation is drawn in the image overlay as small circles. 
+The start and end of the file allocation chain is drawn in a larger orange circle. 
+Here is a zoomed in example showing part of the disk cluster allocation image map, with a file allocation overlay. 
+The file's starting cluster is marked with the larger orange circle. 
+The other file allocation clusters are marked with smaller circles with a tight sequence appearing as a thick colored bar. 
+This example shows two fragments with one large sequential chain.
+<p>
+<img src="zoom-allocation.png">
+
+<p>
+To help inspect NTFS system files, press the <b>SysFiles</b> button to populate a list of system files. Double click on a file name to view its allocation.
+<p>
+<img src="sys-allocation.png">
+<p>
+The <b>SaveAs</b> button will allow you to save a screen capture of the dialog to a disk file.
+<p>
+ 
+<hr>
+<h2> Art Work</h2>
+
+The artwork uses the microscope as its metaphor to represent the quest for file information.  The top splash banner is made of amoebas and the
+disk cluster splash screen is a DNA image. The application name <b>MagniFile</b> is a play on the words <b>Magnifier</b> and <b>File</b>  
+
+<p>
+<img src="about.png">
+<p>
+
+<h2>Points of Interest</h2>
+ 
+When you inspect the code you will find the following items:
+
+<blockquote>
+<li> A bunch of unmanaged API's ported to C#
+<li> Generic ListView printing and exporting.
+<li> Two tier ListView column sorting
+<li> Statistic Dialog draws title twice to give drop shadow effect
+<li> Statistic information is extracted using <b>Reflection</b> 
+<li> Program works in XP32 and XP64
+<li> Logging and exporting save information in CSV format, making it easy to process and manipulate with programs such as Excel (graph handle count).
+</blockquote>
+
+
+<h2>History</h2>
+
+
+<ul>
+<li>Oct 3, 2009 v2.3 
+<ul>                                                                                                             
+  <li> Got File allocation map working </li>
+</ul>
+
+<li>Oct 18, 2009 v3.4 
+<ul>                                                                                                             
+  <li> Created c++ command line tool and various cleanup. </li>
+</ul>
+
+
+<li>Nov 29 2009 v5.8 
+<ul>                                                                                                             
+  <li>Add several more dialogs such as Network info and Disk Monitor. </li>
+  <li>New Chart graph - requires 
+<a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=130F7986-BF49-4FE5-9CA8-910AE6EA442C&displaylang=en"> 
+  MSChart</a> dll which is included in exe zip </li>
+</ul>
+
+
+<li>Dec 13 2009 v6.1 
+<ul>                                                                                                             
+  <li>Code cleanup, performance fixes </li>
+</ul>
+
+
+<li>Apr 12 2010 v6.2, v6.3 
+<ul>                                                                                                             
+  <li>Fix memory corruption accessing open file name </li>
+</ul>
+
+
+
+
+
+</ul>
+
+
+<hr>
+<h2> Download </h2>
+
+<ul class="download">
+<b>MagniFile</b> C# source code and executables:
+
+
+<p>
+<br> To build executable you need to install 
+<a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=130F7986-BF49-4FE5-9CA8-910AE6EA442C&displaylang=en"> 
+MS Chart </a>
+<br> To run you need the mschart dll (included in separate zip file)
+<br> I can't find MsChart for Windows7. Program runs, 
+but you cannot edit/build code on Windows 7 unless you stub out the chart feature.
+The following zip file is only require if you don't already have MsChart installed.
+Place extracted files in the same directory where you store magnifile.exe.
+<blockquote>
+<li><a href="mschart.zip">Download mschart</a> </li>
+</blockquote>
+<p>
+<b>Magnifile v6.3 (requires MsChart) </b>
+<blockquote>
+<li><a href="magnifile-v6.3-x32.exe">Download v6.3 EXE (32bit) - 523 KB</a> </li>
+<li><a href="magnifile-v6.3-x64.exe">Download v6.3 EXE (64bit) - 523 KB</a> </li>
+<li><a href="magnifile-v6.3-src.zip">Download v6.3 source - 629 KB</a> </li>
+</blockquote>
+<p>
+
+<b>Older MagniFile v3.5</b> (does not require mschart)
+<blockquote>
+<li><a href="magnifile-v3.5-xp32-exe.zip">Download v3.5 EXE (Xp32) - 408 KB</a> </li>
+<li><a href="magnifile-v3.5-xp64-exe.zip">Download v3.5 EXE (Xp64) - 408 KB</a> </li>
+<li><a href="magnifile-v3.5-src.zip">Download v3.5 source - 492 KB</a> </li>
+</blockquote>
+
+
+
+<p>
+<b>Mfile v3.6</b> command line utility
+<blockquote>
+<li><a href="mfile-v3.6-xp32-exe.zip">Download EXE (Xp32) - 29 KB</a> </li>
+<li><a href="mfile-v3.6-xp64-exe.zip">Download EXE (Xp64) - 29 KB</a> </li>
+<li><a href="mfile-v3.6-src.zip">Download source - 36 KB</a> </li>
+</blockquote>
+
+</ul>
+
+</body>
+</html>

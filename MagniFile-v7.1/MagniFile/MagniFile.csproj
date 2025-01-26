@@ -1,0 +1,339 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30428</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{359F7C6D-53FB-47E7-B11E-CAE17F8EF388}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MagniFile</RootNamespace>
+    <AssemblyName>MagniFile</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ApplicationIcon>MagniFile.ico</ApplicationIcon>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>MagniFile.Program</StartupObject>
+    <TargetZone>Custom</TargetZone>
+    <GenerateManifests>false</GenerateManifests>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.Printing">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Arguments.cs" />
+    <Compile Include="ComboField.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ComboField.designer.cs">
+      <DependentUpon>ComboField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorMsg.cs" />
+    <Compile Include="FilterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FilterDialog.Designer.cs">
+      <DependentUpon>FilterDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FolderBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FolderBox.Designer.cs">
+      <DependentUpon>FolderBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NumBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NumBox.designer.cs">
+      <DependentUpon>NumBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewFileEvents.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewFileEvents.Designer.cs">
+      <DependentUpon>ViewFileEvents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewFileList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewFileList.designer.cs">
+      <DependentUpon>ViewFileList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewNetInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewNetInfo.designer.cs">
+      <DependentUpon>ViewNetInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileSysInfo.cs" />
+    <Compile Include="ViewGraph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewGraph.Designer.cs">
+      <DependentUpon>ViewGraph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewFsInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewFsInfo.designer.cs">
+      <DependentUpon>ViewFsInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewHelp.designer.cs">
+      <DependentUpon>ViewHelp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ListViewColumnSorter.cs" />
+    <Compile Include="ListViewExt.cs" />
+    <Compile Include="ListViewHandles.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NetSysInfo.cs" />
+    <Compile Include="OpenHandles.cs" />
+    <Compile Include="ListViewProcesses.cs" />
+    <Compile Include="ProcessEx.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FilterDialog.resx">
+      <DependentUpon>FilterDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewFsInfo.resx">
+      <DependentUpon>ViewFsInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewHelp.resx">
+      <DependentUpon>ViewHelp.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewDiskAllocation.resx">
+      <DependentUpon>ViewDiskAllocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SysManagement.cs" />
+    <Compile Include="ViewDiskAllocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewDiskAllocation.Designer.cs">
+      <DependentUpon>ViewDiskAllocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewProcessInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewProcessInfo.Designer.cs">
+      <DependentUpon>ViewProcessInfo.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\yellow24.png" />
+    <None Include="Resources\red24.png" />
+    <None Include="Resources\green24.png" />
+    <None Include="Resources\print.png" />
+    <None Include="Resources\downBW.png" />
+    <None Include="Resources\check-off.png" />
+    <None Include="Resources\upBW.png" />
+    <None Include="Resources\smlCheck-on.png" />
+    <None Include="Resources\printSetup.png" />
+    <None Include="Resources\printPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hlblueGlow.png" />
+    <None Include="Resources\hblueGlow.png" />
+    <None Include="Resources\hlblue.png" />
+    <None Include="Resources\hblue.png" />
+    <EmbeddedResource Include="ComboField.resx">
+      <DependentUpon>ComboField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NumBox.resx">
+      <DependentUpon>NumBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewFileEvents.resx">
+      <DependentUpon>ViewFileEvents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewFileList.resx">
+      <DependentUpon>ViewFileList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewNetInfo.resx">
+      <DependentUpon>ViewNetInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewGraph.resx">
+      <DependentUpon>ViewGraph.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDisk.html" />
+    <None Include="Resources\expoort.png" />
+    <None Include="Resources\up2BW.png" />
+    <None Include="Resources\down2BW.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FolderBox.resx">
+      <DependentUpon>FolderBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpGraph.html" />
+    <EmbeddedResource Include="ViewProcessInfo.resx">
+      <DependentUpon>ViewProcessInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpDiskAllocation.html" />
+    <EmbeddedResource Include="HelpEvent.html" />
+    <EmbeddedResource Include="HelpNet.html" />
+    <EmbeddedResource Include="HelpFile.html" />
+    <EmbeddedResource Include="HelpProcess.html" />
+    <Content Include="MagniFile.ico" />
+    <None Include="Resources\ovalGrey.png" />
+    <None Include="Resources\help24.png" />
+    <None Include="Resources\sonar.wav" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

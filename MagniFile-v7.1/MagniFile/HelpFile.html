@@ -1,0 +1,70 @@
+<html>
+
+<title> MagniFile - Dennis Lang - Open File or Module Help </title>
+
+<style>
+TABLE { background: #e0e0f0; }
+</style>
+
+<body>
+
+<h2> Open File or Module Help </h2>
+
+The "Open File List" dialog displays either the list of all <b>Open Files</b> for the current running processes or 
+their list of modules.  A module is dependences required by the process which is provided by a Dynamically Linked Library (.dll).
+<p>
+The Dialog contains two panels. The top panel lists the detailed file list.  
+The lower panel displays additional information about the file selected in the upper panel.
+<p>
+When you first open this dialog, it will automatically start the file scan.  
+The file scan can be very slow, depending on the number of open files.  
+If you press the <b>Abort</b> button the scan will stop and display those files found.
+<p>
+After the Open File or Module scan completes, the <b>Filter</b> UI appears.
+Use the filter to find specific data or to exclude data.   
+Enter text into the filter dialog and press the <b>Filter</b> button.
+Any matches will be <b>Selected</b> and their <b>Match</b> column will be marked with <b>True</b>.
+Use <b>Right Click</b> to  <b>Invert Selection</b>  or <b>Clear Selection</b>.  
+Using the Fiter and popup menu you can prune the list.
+
+
+<p>
+The Tool bar contains the following commands:
+<blockquote>
+    <li>Modules or Files - Toggles the viewer between displaying Modules and open Files</li>
+    <li>AutoUpdate - Toggles whether automatic updates occur</li>
+    <li>Refresh - Force immediate update</li>
+    <li>Reset - Clears list and reloads </li>
+    <li>Export - Prompt for filename and Save report as CSV (comma-separated-value, readable by Excel)</li>
+    <li>Print Setup - Open printer setup dialog</li>
+    <li>FitToPage - Toggles whether printing will try to force output to a single page</li>
+    <li>Print - Print network connections report</li>
+</blockquote>
+
+<p>
+The upper panel dislays theh following information:
+<blockquote>
+    <table style="border: 2px solid">
+    <tr><td><b>Process</b></td><td>Process name which opened file or module</td></tr>
+    <tr><td><b>Pid</b></td><td>Process Id of owner</td></tr>
+    <tr><td><b>Directory</b></td><td>Directory path of object which caused event</td></tr>
+    <tr><td><b>Name</b></td><td>Name part of object which caused event</td></tr>
+    <tr><td><b>Ext</b></td><td>Extension part of object which caused event</td></tr>
+    <tr><td><b>Size</b></td><td>Size of object at time of event (only for files)</td></tr>
+    <tr><td><b>Modified</b></td><td>Time of last modification</td></tr>
+    <tr><td><b>Type</b></td><td>File or Directory</td></tr>
+    <tr><td><b>Access</b></td><td>Access attributes of object (ReadOnly, Write, etc)</td></tr>
+    <tr><td><b>Scan Time</b></td><td>Time of last refresh</td></tr>
+    <tr><td><b>Match</b></td><td>When filter pattern used, indicates any match. Useful for sorting column</td></tr>
+    </table>
+</blockquote>  
+
+<p>
+When you click on a file or module in the upper panel which points to a real file (size is non-zero) 
+additional information will be displayed in the lower panel.   
+The lower panel displays standard file information include the file's cluster allocation.  
+The cluster allocation list the disk clusters owned by the file.  
+
+
+</body>
+</html>
