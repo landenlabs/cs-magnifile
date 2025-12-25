@@ -144,6 +144,7 @@ namespace MagniFile
                 deadList.Clear();
 
                 int i = 0;
+				if (processDict != null)
                 foreach(int pid in processDict.Keys)
                 {
                     ListViewItem item = FindViewItem(procView.Items, pid.ToString(), pIdCol);

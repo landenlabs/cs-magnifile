@@ -1,26 +1,23 @@
 ﻿using System;
+// printing
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Printing;
 using System.IO;
-using System.Windows.Forms;
-
+using System.Linq;
 // Refection
 using System.Reflection;
 using System.Runtime.InteropServices;
-
+using System.Runtime.Serialization;
 // Serialization
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization;
-
-// printing
-using System.Collections;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Drawing.Printing;
-using System.Drawing.Drawing2D;
-using System.Printing;
+using System.Text;
+using System.Text.Json;
+using System.Windows.Forms;
 
 namespace MagniFile
 {
@@ -82,79 +79,71 @@ namespace MagniFile
         /// </summary>
         /// <param name="listView">ListView to export</param>
         /// <returns>Filename if okay, else empty string on error</returns>
-        static public string Save(ListView listView)
-        {
-            if (listView == null || listView.Items.Count == 0)
-                return string.Empty;
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.DefaultExt = "dat";
-            saveFileDialog.Filter = "Data|*.dat|Any|*.*";
-            saveFileDialog.Title = "Save List";
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                String filePath = saveFileDialog.FileName;
-
-                try
-                {
-                    IFormatter formatter = new BinaryFormatter();
-                    Stream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
-
-                    
-                    ListViewData lvData = new ListViewData();
-                    lvData.ReadList(listView);
-                    formatter.Serialize(stream, lvData);
-                    stream.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-
-                return filePath;
-            }
-
-            return string.Empty;
-               
-        }
-
-        static public string Load(ListView listView)
-        {
-            OpenFileDialog loadFileDialog = new OpenFileDialog();
-            loadFileDialog.DefaultExt = "dat";
-            loadFileDialog.Filter = "Data|*.dat|Any|*.*";
-            loadFileDialog.Title = "Load List";
-
-            if (loadFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                String filePath = loadFileDialog.FileName;
-
-                try
-                {
-                    IFormatter formatter = new BinaryFormatter();
-                    Stream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.None);
-                    ListViewData lvData = (ListViewData)formatter.Deserialize(stream);
-                    lvData.WriteList(listView);
-                    stream.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-
-                return filePath;
-            }
-
-            return string.Empty;
-        }
 
 
-        /// <summary>
-        /// Import a CSV file and save in ListView  
-        ///   First line must specify column headers
-        /// </summary>
-        static public int Import(ListView listView, string path, int matchColIdx, string matchValue)
+	static public string Save(ListView listView) {
+		if (listView == null || listView.Items.Count == 0)
+			return string.Empty;
+
+		SaveFileDialog saveFileDialog = new SaveFileDialog();
+		saveFileDialog.DefaultExt = "json";   // or keep "dat"
+		saveFileDialog.Filter = "JSON|*.json|Any|*.*";
+		saveFileDialog.Title = "Save List";
+
+		if (saveFileDialog.ShowDialog() == DialogResult.OK) {
+			string filePath = saveFileDialog.FileName;
+
+			try {
+				ListViewData lvData = new ListViewData();
+				lvData.ReadList(listView);
+
+				var options = new JsonSerializerOptions {
+					WriteIndented = true
+				};
+
+				string json = JsonSerializer.Serialize(lvData, options);
+				File.WriteAllText(filePath, json);
+			} catch (Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
+
+			return filePath;
+		}
+
+		return string.Empty;
+	}
+
+	static public string Load(ListView listView) {
+		OpenFileDialog loadFileDialog = new OpenFileDialog();
+		loadFileDialog.DefaultExt = "json";   // or keep "dat"
+		loadFileDialog.Filter = "JSON|*.json|Any|*.*";
+		loadFileDialog.Title = "Load List";
+
+		if (loadFileDialog.ShowDialog() == DialogResult.OK) {
+			string filePath = loadFileDialog.FileName;
+
+			try {
+				string json = File.ReadAllText(filePath);
+				ListViewData lvData = JsonSerializer.Deserialize<ListViewData>(json);
+
+				if (lvData != null)
+					lvData.WriteList(listView);
+			} catch (Exception ex) {
+				MessageBox.Show(ex.Message);
+			}
+
+			return filePath;
+		}
+
+		return string.Empty;
+	}
+
+
+	/// <summary>
+	/// Import a CSV file and save in ListView  
+	///   First line must specify column headers
+	/// </summary>
+	static public int Import(ListView listView, string path, int matchColIdx, string matchValue)
         {
             int lineCnt = 0;
             TextReader txtReader = new StreamReader(path);

@@ -6,7 +6,6 @@ using System.Text;
 //  http://www.dotnetmonster.com/Uwe/Forum.aspx/dotnet-clr/654/FormatMessage-in-C-only-looks-for-system-messages
 
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 
 namespace MagniFile

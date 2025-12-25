@@ -87,12 +87,14 @@ namespace MagniFile
             timer.Start();
         }
 
-        #region ==== Close/Open
+		#region ==== Close/Open
 
-        /// <summary>
-        /// Set/Get value indicates if dialog exits when user close it.
-        /// </summary>
-        public bool ExitOnClose
+		/// <summary>
+		/// Set/Get value indicates if dialog exits when user close it.
+		/// </summary>
+		[Browsable(true)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+		public bool ExitOnClose
         {
             get { return exitOnClose; }
             set { exitOnClose = value; }
@@ -124,9 +126,9 @@ namespace MagniFile
                 this.Close();
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (exitOnClose && dnsResolver != null)
+		protected override void OnFormClosing(FormClosingEventArgs e) 
+		{
+			if (exitOnClose && dnsResolver != null)
                 dnsResolver.Stop();
             e.Cancel = !exitOnClose;        // cancel close, just hide dialog and stop timer.
             base.OnClosing(e);

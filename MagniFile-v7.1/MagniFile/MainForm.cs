@@ -220,9 +220,9 @@ namespace MagniFile
             this.Close();
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            if (this.viewNetInfo != null)
+		protected override void OnFormClosing(FormClosingEventArgs e) 
+		{
+			if (this.viewNetInfo != null)
             {
                 viewNetInfo.ExitOnClose = true;
                 viewNetInfo.Close();

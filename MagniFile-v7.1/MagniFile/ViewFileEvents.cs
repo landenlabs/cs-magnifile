@@ -128,9 +128,9 @@ namespace MagniFile
 #endif
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            e.Cancel = true;        // cancel close, just hide dialog
+		protected override void OnFormClosing(FormClosingEventArgs e) 
+		{
+			e.Cancel = true;        // cancel close, just hide dialog
             base.OnClosing(e);
             this.Visible = false;
         }

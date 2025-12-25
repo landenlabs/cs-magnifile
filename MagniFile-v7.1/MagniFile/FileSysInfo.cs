@@ -889,7 +889,7 @@ namespace MagniFile
             public long DiskSize;
         }
  
-        unsafe static public bool GetDriveGeometry(DISK_GEOMETRY_EX pdg)
+        static public bool GetDriveGeometry(DISK_GEOMETRY_EX pdg)
         {
 #if false
             uint junk = 51200; 

@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <Compile Update="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ComboField.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FilterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FolderBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="NumBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewDiskAllocation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewFileEvents.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewFileList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewFsInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewGraph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewNetInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ViewProcessInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

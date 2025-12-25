@@ -15,8 +15,8 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing.Imaging;
 
 // Printing
-using System.Printing;
-using System.Drawing.Printing;
+// using System.Printing;
+// using System.Drawing.Printing;
 
 // Access assembly (used by html help)
 using System.Reflection;
@@ -93,17 +93,21 @@ namespace MagniFile
             public int offset;
         }
 
-        public ListView GraphListView
+		[Browsable(true)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+		public ListView GraphListView
         {
             get { return listView; }
             set { listView = value; UpdateAll(); }
         }
 
-        /// <summary>
-        /// Array of Process IDs actively being Logged.
-        /// <Name><Pid>,...
-        /// </summary>
-        public string LogNamePids { set; get; }
+		/// <summary>
+		/// Array of Process IDs actively being Logged.
+		/// <Name><Pid>,...
+		/// </summary>
+		[Browsable(true)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+		public string LogNamePids { set; get; }
 
         #endregion
 
@@ -299,9 +303,9 @@ namespace MagniFile
             }
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            e.Cancel = true;        // cancel close, just hide dialog
+		protected override void OnFormClosing(FormClosingEventArgs e) 
+		{
+			e.Cancel = true;        // cancel close, just hide dialog
             base.OnClosing(e);
             this.Visible = false;
         }
@@ -1249,12 +1253,13 @@ namespace MagniFile
 
         #region ==== Print screen capture
 
+		/*
         public void PrintGraph()
         {
-            PrintDocument printDoc = new PrintDocument();
-            printDoc.DocumentName = this.title;
-            printDoc.DefaultPageSettings.Landscape = true;
-            printDoc.PrintPage += new PrintPageEventHandler(PrintPage);
+            // PrintDocument printDoc = new PrintDocument();
+            // printDoc.DocumentName = this.title;
+            // printDoc.DefaultPageSettings.Landscape = true;
+            // printDoc.PrintPage += new PrintPageEventHandler(PrintPage);
 
             PrintDialog printDialog = new PrintDialog();
             printDialog.Document = printDoc;
@@ -1271,17 +1276,19 @@ namespace MagniFile
                 printDoc.Print();
             }
         }
+		*/
 
+		/*
         void PrintPage(object o, PrintPageEventArgs e)
         {
             Image image = ScreenCaptureSelf();
             Point p = new Point(10, 10);
             e.Graphics.DrawImage(image, p);     
         }
-
+		*/
         private void printBtn_Click(object sender, EventArgs e)
         {
-            PrintGraph();
+            // PrintGraph();
         }
 
         #endregion
