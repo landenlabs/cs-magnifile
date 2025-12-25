@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>MagniFile.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -26,6 +26,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <OutputPath>bin\x64\Debug\</OutputPath>

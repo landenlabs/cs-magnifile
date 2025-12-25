@@ -11,7 +11,9 @@ using System.Globalization;
 // using System.Net;
 using Microsoft.Win32;
 using System.Media;
-
+using System.Reflection;
+using System.Security.Principal;
+using System.Diagnostics;
 
 namespace MagniFile
 {
@@ -62,7 +64,15 @@ namespace MagniFile
 
         public MainForm(string[] args)
         {
-            InitializeComponent();
+			if (!IsRunningAsAdmin()) {
+				if (RestartAsAdmin())
+					return; // exit current non-admin instance
+			}
+
+			// Your privileged code here
+			Console.WriteLine("Running with admin rights!");
+
+			InitializeComponent();
 
             #region ==== Custom initialization 
 
@@ -215,7 +225,29 @@ namespace MagniFile
             this.handleView.EndUpdate();
         }
 
-        private void closeBtn_Click(object sender, EventArgs e)
+		bool IsRunningAsAdmin() {
+			var identity = WindowsIdentity.GetCurrent();
+			var principal = new WindowsPrincipal(identity);
+			return principal.IsInRole(WindowsBuiltInRole.Administrator);
+		}
+
+		bool RestartAsAdmin() {
+			var exeName = Assembly.GetExecutingAssembly().Location;
+			var startInfo = new ProcessStartInfo(exeName) {
+				UseShellExecute = true,
+				Verb = "runas" // triggers UAC prompt
+			};
+
+			try {
+				Process.Start(startInfo);
+				return true;
+			} catch {
+				Console.WriteLine("User declined elevation.");
+				return false;
+			}
+		}
+
+		private void closeBtn_Click(object sender, EventArgs e)
         {
             this.Close();
         }
