@@ -1,164 +1,175 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using System.Runtime.InteropServices;
 using System.Diagnostics;
-
-using System.Security;
-using System.Security.Principal;
-
 using System.Net;       // map tcpdevice to ip:port
+using System.Runtime.InteropServices;
+using System.Security;
 
-namespace MagniFile
-{
-  
-    /// <summary>
-    /// Collect open handles.  Code found on sysInternals website.
-    /// http://forum.sysinternals.com/forum_posts.asp?TID=17533
-    /// 
-    /// Modified by Dennis Lang 2009
-    /// https://landenlabs.com/
-    /// 
-    /// </summary>
-    class OpenHandles
-    {
-        [DllImport("ntdll.dll", SetLastError = true)]
-        public static extern uint ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS SystemInformationClass, 
-            IntPtr SystemInformation, int SystemInformationLength, out int ReturnLength);
+namespace MagniFile {
 
-        public enum SYSTEM_INFORMATION_CLASS : int
-        {
-            SystemBasicInformation,
-            SystemProcessorInformation,
-            SystemPerformanceInformation,
-            SystemTimeOfDayInformation,
-            SystemNotImplemented1,
-            SystemProcessesAndThreadsInformation,
-            SystemCallCounts,
-            SystemConfigurationInformation,
-            SystemProcessorTimes,
-            SystemGlobalFlag,
-            SystemNotImplemented2,
-            SystemModuleInformation,
-            SystemLockInformation,
-            SystemNotImplemented3,
-            SystemNotImplemented4,
-            SystemNotImplemented5,
-            SystemHandleInformation
-            // there's more but it would make the post too long...
-        }
+	/// <summary>
+	/// Collect open handles.  Code found on sysInternals website.
+	/// http://forum.sysinternals.com/forum_posts.asp?TID=17533
+	/// 
+	/// Modified by Dennis Lang 2009
+	/// https://landenlabs.com/
+	/// 
+	/// </summary>
+	class OpenHandles {
+		[DllImport("ntdll.dll", SetLastError = true)]
+		public static extern uint ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS SystemInformationClass,
+			IntPtr SystemInformation, int SystemInformationLength, out int ReturnLength);
 
-        //  http://msdn.microsoft.com/en-us/library/ms973190.aspx
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SYSTEM_HANDLE_INFORMATION
-        {   // sizeof 16 for XP32 and 24 bytes for XP64
-            public Int32 ProcessId;
-            public byte ObjectTypeNumber;
-            public byte Flags;              // 1 = PROTECT_FROM_CLOSE, 2 = INHERIT
-            public short Handle;
-            public IntPtr Object;           // 4 or 8 byte field.
-            public Int32 GrantedAccess;
-            // pad with 4 bytes for xp64
-        }
-        static  int hndSize = IntPtr.Size;    // 8 for xp64 and 4 for xp32
+		public enum SYSTEM_INFORMATION_CLASS : int {
+			SystemBasicInformation,
+			SystemProcessorInformation,
+			SystemPerformanceInformation,
+			SystemTimeOfDayInformation,
+			SystemNotImplemented1,
+			SystemProcessesAndThreadsInformation,
+			SystemCallCounts,
+			SystemConfigurationInformation,
+			SystemProcessorTimes,
+			SystemGlobalFlag,
+			SystemNotImplemented2,
+			SystemModuleInformation,
+			SystemLockInformation,
+			SystemNotImplemented3,
+			SystemNotImplemented4,
+			SystemNotImplemented5,
+			SystemHandleInformation
+			// there's more but it would make the post too long...
+		}
 
-        const uint STATUS_INFO_LENGTH_MISMATCH = 0xc0000004;
+		//  http://msdn.microsoft.com/en-us/library/ms973190.aspx
+		[StructLayout(LayoutKind.Sequential)]
+		public struct SYSTEM_HANDLE_INFORMATION {   // sizeof 16 for XP32 and 24 bytes for XP64
+			public Int32 ProcessId;
+			public byte ObjectTypeNumber;
+			public byte Flags;              // 1 = PROTECT_FROM_CLOSE, 2 = INHERIT
+			public short Handle;
+			public IntPtr Object;           // 4 or 8 byte field.
+			public Int32 GrantedAccess;
+			// pad with 4 bytes for xp64
+		}
+		static int hndSize = IntPtr.Size;    // 8 for xp64 and 4 for xp32
 
-        public static SYSTEM_HANDLE_INFORMATION[] EnumHandles()
-        {
-            int retLength = 0;
-            int allocLength = 0x1000;
-            IntPtr data = Marshal.AllocHGlobal(allocLength);
-            
-            // This is needed because ZwQuerySystemInformation with SystemHandleInformation doesn't
-            // actually give a real return length when called with an insufficient buffer. This code
-            // tries repeatedly to call the function, doubling the buffer size each time it fails.
-            while (ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS.SystemHandleInformation, data,
-                allocLength, out retLength) == STATUS_INFO_LENGTH_MISMATCH)
-                data = Marshal.ReAllocHGlobal(data, new IntPtr(allocLength *= 2));
-            
-            // The structure of the buffer is the handle count plus an array of SYSTEM_HANDLE_INFORMATION
-            // structures.
-            // int handleCount = Marshal.ReadInt32(data);
-            int handleCount = Marshal.ReadInt32(data);
-            SYSTEM_HANDLE_INFORMATION[] returnHandles = new SYSTEM_HANDLE_INFORMATION[handleCount];
-            
-            for (int i = 0; i < handleCount; i++)
-            {
-                returnHandles[i] = (SYSTEM_HANDLE_INFORMATION)Marshal.PtrToStructure(
-                    new IntPtr(data.ToInt32() + hndSize + i * Marshal.SizeOf(typeof(SYSTEM_HANDLE_INFORMATION))),
-                    typeof(SYSTEM_HANDLE_INFORMATION));
-            }
-            
-            Marshal.FreeHGlobal(data);
-            
-            return returnHandles;
-        }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern int DuplicateHandle(int hSourceProcessHandle, int hSourceHandle,
-                int hTargetProcessHandle, ref int lpTargetHandle,
-                int dwDesiredAccess, int bInheritHandle, int dwOptions);
-
-        [Flags]
-        enum DuplicateOptions : uint
-        {
-            DUPLICATE_CLOSE_SOURCE = (0x00000001),// Closes the source handle. This occurs regardless of any error status returned.
-            DUPLICATE_SAME_ACCESS = (0x00000002), //Ignores the dwDesiredAccess parameter. The duplicate handle has the same access as the source handle.
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct StatusBlock
-        {
-            public UInt64 v1;
-            public UInt64 v2;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct FILE_NAME_INFORMATION 
-        {
-          public UInt64     FileNameLength;
-          public Char       FileName;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        struct UNICODE_STRING
-        {
-            public UInt16 Length;
-            public UInt16 MaximumLength;
-            public IntPtr pBuffer;
-        }
-
-        [DllImport("ntdll.dll", SetLastError = true)]
-        static extern uint ZwQueryInformationFile(int hnd, IntPtr StatusBlock, IntPtr FILE_NAME_INFORMATION, 
-            int FileInfoLength, int code);
+		public const uint STATUS_INFO_LENGTH_MISMATCH = 0xc0000004;
 
 
-        [DllImport("ntdll.dll", SetLastError = true)]
-        static extern uint ZwQueryObject(int hnd, int code, IntPtr FILE_NAME_INFORMATION,
-            int FileInfoLength, ref int ReturnLength);
+		public static SYSTEM_HANDLE_INFORMATION[] EnumHandles() {
+			int retLength = 0;
+			int allocLength = 0x10000; // Start with a larger buffer (64KB)
+			IntPtr data = Marshal.AllocHGlobal(allocLength);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool CloseHandle(int handle);
+			try {
+				// 1. Loop until buffer is large enough
+				uint status;
+				while ((status = ZwQuerySystemInformation(SYSTEM_INFORMATION_CLASS.SystemHandleInformation, data, allocLength, out retLength)) == STATUS_INFO_LENGTH_MISMATCH) {
+					allocLength = retLength > allocLength ? retLength : allocLength * 2;
+					// Reallocate to the new size. Free and reallocate to avoid leaking if ReAllocHGlobal fails
+					Marshal.FreeHGlobal(data);
+					data = Marshal.AllocHGlobal(allocLength);
+				}
+
+				if (status != 0) // STATUS_SUCCESS
+					return Array.Empty<SYSTEM_HANDLE_INFORMATION>();
+
+				// Use the returned length when available to bound parsing
+				int bytesAvailable = retLength > 0 ? retLength : allocLength;
+
+				// 2. Read the count (Use 32-bit read to avoid a malformed huge value)
+				int reportedCount = 0;
+				try { reportedCount = Marshal.ReadInt32(data); } catch { reportedCount = 0; }
+
+				if (reportedCount < 0) reportedCount = 0;
+
+				int structSize = Marshal.SizeOf(typeof(SYSTEM_HANDLE_INFORMATION));
+				int maxPossible = (bytesAvailable - IntPtr.Size) / structSize;
+				if (maxPossible < 0) maxPossible = 0;
+				int count = Math.Min(reportedCount, maxPossible);
+
+				var handles = new List<SYSTEM_HANDLE_INFORMATION>(count > 0 ? count : Math.Max(16, maxPossible));
+
+				long baseAddr = data.ToInt64();
+				long offset = IntPtr.Size; // Skip the handle count header
+
+				for (int i = 0; i < count; i++) {
+					if (offset + structSize > bytesAvailable)
+						break; // avoid reading past buffer
+
+					IntPtr entryPtr = new IntPtr(baseAddr + offset);
+					var entry = (SYSTEM_HANDLE_INFORMATION)Marshal.PtrToStructure(entryPtr, typeof(SYSTEM_HANDLE_INFORMATION));
+					handles.Add(entry);
+					offset += structSize;
+				}
+
+				return handles.ToArray();
+			}
+			finally {
+				// Use finally to ensure memory is freed even if an exception occurs
+				Marshal.FreeHGlobal(data);
+			}
+		}
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		static extern int DuplicateHandle(int hSourceProcessHandle, int hSourceHandle,
+				int hTargetProcessHandle, ref int lpTargetHandle,
+				int dwDesiredAccess, int bInheritHandle, int dwOptions);
+
+		[Flags]
+		enum DuplicateOptions : uint {
+			DUPLICATE_CLOSE_SOURCE = (0x00000001),// Closes the source handle. This occurs regardless of any error status returned.
+			DUPLICATE_SAME_ACCESS = (0x00000002), //Ignores the dwDesiredAccess parameter. The duplicate handle has the same access as the source handle.
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct StatusBlock {
+			public UInt64 v1;
+			public UInt64 v2;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct FILE_NAME_INFORMATION {
+			public UInt64 FileNameLength;
+			public Char FileName;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct UNICODE_STRING {
+			public UInt16 Length;
+			public UInt16 MaximumLength;
+			public IntPtr pBuffer;
+		}
+
+		[DllImport("ntdll.dll", SetLastError = true)]
+		static extern uint ZwQueryInformationFile(int hnd, IntPtr StatusBlock, IntPtr FILE_NAME_INFORMATION,
+			int FileInfoLength, int code);
 
 
-        [DllImport("advapi32", SetLastError = true),
-        SuppressUnmanagedCodeSecurityAttribute]
-        static extern int OpenProcessToken(
-            System.IntPtr ProcessHandle,    // handle to process
-            int DesiredAccess,              // desired access to process
-            ref IntPtr TokenHandle);        // handle to open access token
+		[DllImport("ntdll.dll", SetLastError = true)]
+		static extern uint ZwQueryObject(int hnd, int code, IntPtr FILE_NAME_INFORMATION,
+			int FileInfoLength, ref int ReturnLength);
 
-  
-        [DllImport("advapi32.dll", SetLastError = true)]
-        internal static extern bool LookupPrivilegeValue(string host, string name, ref long pluid);
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool CloseHandle(int handle);
 
-        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
-        internal static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall,
-                ref TokPriv1Luid newst, int len, IntPtr prev, IntPtr relen);
+
+		[DllImport("advapi32", SetLastError = true),
+		SuppressUnmanagedCodeSecurityAttribute]
+		static extern int OpenProcessToken(
+			System.IntPtr ProcessHandle,    // handle to process
+			int DesiredAccess,              // desired access to process
+			ref IntPtr TokenHandle);        // handle to open access token
+
+
+		[DllImport("advapi32.dll", SetLastError = true)]
+		internal static extern bool LookupPrivilegeValue(string host, string name, ref long pluid);
+
+		[DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
+		internal static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall,
+				ref TokPriv1Luid newst, int len, IntPtr prev, IntPtr relen);
 
 #if false
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -175,213 +186,193 @@ namespace MagniFile
         }
 #endif
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct TokPriv1Luid
-        {
-            public int Count;
-            public long Luid;
-            public int Attr;
-        }
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		internal struct TokPriv1Luid {
+			public int Count;
+			public long Luid;
+			public int Attr;
+		}
 
-        /// <summary>
-        /// Enable special Debug privilege to peak at file handles owned by other processes.
-        /// </summary>
-        public static void EnableDebugPrivilege()
-        {
-            // const int TOKEN_QUERY = 0X00000008;
-            const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;
+		/// <summary>
+		/// Enable special Debug privilege to peak at file handles owned by other processes.
+		/// </summary>
+		public static void EnableDebugPrivilege() {
+			// const int TOKEN_QUERY = 0X00000008;
+			const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;
 
-            const int SE_PRIVILEGE_ENABLED = 0x00000002;
-            const string SE_DEBUG_NAME = "SeDebugPrivilege";
+			const int SE_PRIVILEGE_ENABLED = 0x00000002;
+			const string SE_DEBUG_NAME = "SeDebugPrivilege";
 
-            IntPtr hToken = IntPtr.Zero;
-            Process proc = Process.GetCurrentProcess();
-            if (OpenProcessToken(proc.Handle, TOKEN_ADJUST_PRIVILEGES , ref hToken) != 0)
-            {
-                TokPriv1Luid tp = new TokPriv1Luid();
-              
-                if (LookupPrivilegeValue(string.Empty, SE_DEBUG_NAME, ref tp.Luid))
-                {
-                    tp.Count = 1;
-                    tp.Attr = SE_PRIVILEGE_ENABLED;
-                    int tpSz = Marshal.SizeOf(tp);
+			IntPtr hToken = IntPtr.Zero;
+			Process proc = Process.GetCurrentProcess();
+			if (OpenProcessToken(proc.Handle, TOKEN_ADJUST_PRIVILEGES, ref hToken) != 0) {
+				TokPriv1Luid tp = new TokPriv1Luid();
 
-                    if (AdjustTokenPrivileges(hToken, false, ref tp, tpSz, IntPtr.Zero, IntPtr.Zero) == false)
-                    {
-                        int err = Marshal.GetLastWin32Error();
-                        System.Diagnostics.Debug.WriteLine("Debug Privilege failed, Error =" + err);
-                    }
-                }
-            }
-        }
+				if (LookupPrivilegeValue(string.Empty, SE_DEBUG_NAME, ref tp.Luid)) {
+					tp.Count = 1;
+					tp.Attr = SE_PRIVILEGE_ENABLED;
+					int tpSz = Marshal.SizeOf(tp);
 
-        /// <summary>
-        /// Return Description of handle.
-        /// Note: only some handle object types are supported (Directory, Key, File, ...)
-        /// ToDo: This list should not be hard coded. Instead the OS should be queried for each type.
-        /// </summary>
-        /// <param name="pid">Process Id of handle owner</param>
-        /// <param name="handle">Handle number</param>
-        /// <param name="objectTypeNumber">Object number of handle (See ObjectTypeDescription()) </param>
-        /// <returns>true string has description, false string has error</returns>
-        public static bool HandleDescription(
-            Process ourProc,
-            Process pidProc,
-            int handle, int objectTypeNumber, out string description)
-        {
-            description = string.Empty;
-            bool result = false;
+					if (AdjustTokenPrivileges(hToken, false, ref tp, tpSz, IntPtr.Zero, IntPtr.Zero) == false) {
+						int err = Marshal.GetLastWin32Error();
+						System.Diagnostics.Debug.WriteLine("Debug Privilege failed, Error =" + err);
+					}
+				}
+			}
+		}
 
-            // In order to query a handle, we need to convert it from the owners number scheme to 
-            // our number scheme by duplicating the handle. Some handles cannot be duplicated.
-            if (objectTypeNumber > 30 || objectTypeNumber < 0)
-                objectTypeNumber = 0;
+		/// <summary>
+		/// Return Description of handle.
+		/// Note: only some handle object types are supported (Directory, Key, File, ...)
+		/// ToDo: This list should not be hard coded. Instead the OS should be queried for each type.
+		/// </summary>
+		/// <param name="pid">Process Id of handle owner</param>
+		/// <param name="handle">Handle number</param>
+		/// <param name="objectTypeNumber">Object number of handle (See ObjectTypeDescription()) </param>
+		/// <returns>true string has description, false string has error</returns>
+		public static bool HandleDescription(
+			Process ourProc,
+			Process pidProc,
+			int handle, int objectTypeNumber, out string description) {
+			description = string.Empty;
+			bool result = false;
 
-            switch (objectTypeNumber)
-            {
-                case 1: //type1 
-                // case 2: //Directory 
-                // case 3: //SymbolicLink 
-                case 4: //Token 
-                case 5: //Process 
-                case 6: //Thread 
-                case 7: //Job 
-                case 8: //type8 
-                case 9: //Event 
-                case 10: //type10 
-                // case 11: //Mutant 
-                case 12: //type12 
-                case 13: //Semaphore 
-                case 14: //Timer 
-                case 15: //type15 
-                // case 16: //KeyedEvent 
-                // case 17: //WindowStn 
-                // case 18: //Desktop 
-                // case 19: //Section 
-                // case 20: //Registry 
-                case 21: //Port 
-                case 22: //type22 
-                case 23: //type23 
-                case 24: //type24 
-                case 25: //type25 
-                case 26: //type26 
-                case 27: //IoComplete       
-                // case 28: //File 
-                case 29: //WmiGuid 
-                case 30: // ????
-                    return false;   // cannot dup, return 
-            }
+			// In order to query a handle, we need to convert it from the owners number scheme to 
+			// our number scheme by duplicating the handle. Some handles cannot be duplicated.
+			if (objectTypeNumber > 30 || objectTypeNumber < 0)
+				objectTypeNumber = 0;
 
-            // Process pidProc = Process.GetProcessById(pid);
-            // Process ourProc = Process.GetCurrentProcess();
+			switch (objectTypeNumber) {
+				case 1: //type1 
+						// case 2: //Directory 
+						// case 3: //SymbolicLink 
+				case 4: //Token 
+				case 5: //Process 
+				case 6: //Thread 
+				case 7: //Job 
+				case 8: //type8 
+				case 9: //Event 
+				case 10: //type10 
+						 // case 11: //Mutant 
+				case 12: //type12 
+				case 13: //Semaphore 
+				case 14: //Timer 
+				case 15: //type15 
+						 // case 16: //KeyedEvent 
+						 // case 17: //WindowStn 
+						 // case 18: //Desktop 
+						 // case 19: //Section 
+						 // case 20: //Registry 
+				case 21: //Port 
+				case 22: //type22 
+				case 23: //type23 
+				case 24: //type24 
+				case 25: //type25 
+				case 26: //type26 
+				case 27: //IoComplete       
+						 // case 28: //File 
+				case 29: //WmiGuid 
+				case 30: // ????
+					return false;   // cannot dup, return 
+			}
+
+			// Process pidProc = Process.GetProcessById(pid);
+			// Process ourProc = Process.GetCurrentProcess();
 
 
-            int ourHandle = 0;
-            IntPtr dataPtr = IntPtr.Zero;
-            IntPtr statusBlock = IntPtr.Zero;
-            const int READ_CONTROL = 0x00020000;
-            const int STANDARD_RIGHTS_READ = READ_CONTROL;
-            // const int DUPLICATE_CLOSE_SOURCE = 0x00000001;
-            // const int DUPLICATE_SAME_ACCESS = 0x00000002;  
+			int ourHandle = 0;
+			IntPtr dataPtr = IntPtr.Zero;
+			IntPtr statusBlock = IntPtr.Zero;
+			const int READ_CONTROL = 0x00020000;
+			const int STANDARD_RIGHTS_READ = READ_CONTROL;
+			// const int DUPLICATE_CLOSE_SOURCE = 0x00000001;
+			// const int DUPLICATE_SAME_ACCESS = 0x00000002;  
 
 
-            try
-            {
-                // socket should use WSADuplicateSocket(SOCKET s, DWORD processId, WSAPROTOCOL_INFO* pProtocolInfo)
+			try {
+				// socket should use WSADuplicateSocket(SOCKET s, DWORD processId, WSAPROTOCOL_INFO* pProtocolInfo)
 
-                int status1 = DuplicateHandle(pidProc.Handle.ToInt32(), handle, ourProc.Handle.ToInt32(),
-                    ref ourHandle, 0 /* STANDARD_RIGHTS_READ */, 0, 0);
-                if (status1 == 1 && ourHandle > 0)
-                {
-                    const int fileInfoSize = 512;             // guess at max query response size.
-                    dataPtr = Marshal.AllocHGlobal(fileInfoSize);
-                    uint status2;
-                    int returnSize = 0;
+				int status1 = DuplicateHandle(pidProc.Handle.ToInt32(), handle, ourProc.Handle.ToInt32(),
+					ref ourHandle, 0 /* STANDARD_RIGHTS_READ */, 0, 0);
+				if (status1 == 1 && ourHandle > 0) {
+					const int fileInfoSize = 512;             // guess at max query response size.
+					dataPtr = Marshal.AllocHGlobal(fileInfoSize);
+					uint status2;
+					int returnSize = 0;
 
 
-                    if (objectTypeNumber == 28)
-                    {
-                        // Use specialized QueryInformationFile for file handles.
-                        statusBlock = Marshal.AllocHGlobal(16);
-                        int FileNameInformation = 9;        // enum to query filename
+					if (objectTypeNumber == 28) {
+						// Use specialized QueryInformationFile for file handles.
+						statusBlock = Marshal.AllocHGlobal(16);
+						int FileNameInformation = 9;        // enum to query filename
 
-                        status2 = ZwQueryInformationFile(ourHandle, statusBlock, dataPtr,
-                                fileInfoSize, FileNameInformation);
-                        if (status2 == 0)
-                        {
-                            int filenameLength = Marshal.ReadInt32(dataPtr);
-                            if (filenameLength > 0 && filenameLength < 256)
-                            {
-                                string fn = Marshal.PtrToStringUni(new IntPtr(dataPtr.ToInt32() + 4));
-                                string tmpStr = fn.Substring(0, filenameLength / 2);
-                                description = (string)tmpStr.Clone();
+						status2 = ZwQueryInformationFile(ourHandle, statusBlock, dataPtr,
+								fileInfoSize, FileNameInformation);
+						if (status2 == 0) {
+							int filenameLength = Marshal.ReadInt32(dataPtr);
+							if (filenameLength > 0 && filenameLength < 256) {
+								string fn = Marshal.PtrToStringUni(new IntPtr(dataPtr.ToInt32() + 4));
+								string tmpStr = fn.Substring(0, filenameLength / 2);
+								description = (string)tmpStr.Clone();
 
-                                if (description == @"\Device\Tcp" ||
-                                    description == @"\Device\Udp")
-                                {
-                                    description += NetworkInfo.ConnectionDetails(ourHandle);
-                                }
+								if (description == @"\Device\Tcp" ||
+									description == @"\Device\Udp") {
+									description += NetworkInfo.ConnectionDetails(ourHandle);
+								}
 
-                                result = true;
-                            }
-                        }
-                    }
+								result = true;
+							}
+						}
+					}
 
-                    if (objectTypeNumber != 28 || description.Length == 0)     
-                    {
-                        // use QueryObject for non-files handles or files which failed to return a desc.
-                        status2 = ZwQueryObject(ourHandle, 1, dataPtr, fileInfoSize, ref returnSize);
-                        if (status2 == 0)
-                        {
-                            int filenameLength = Marshal.ReadInt16(dataPtr);
-                            if (filenameLength > 0)
-                            {
-                                int offset = IntPtr.Size * 2;
-                                string fn = Marshal.PtrToStringUni(new IntPtr(dataPtr.ToInt32() + offset));
-                                string tmpStr = fn.Substring(0, filenameLength / 2);
-                                description = (string)tmpStr.Clone();
+					if (objectTypeNumber != 28 || description.Length == 0) {
+						// use QueryObject for non-files handles or files which failed to return a desc.
+						status2 = ZwQueryObject(ourHandle, 1, dataPtr, fileInfoSize, ref returnSize);
+						if (status2 == 0) {
+							int filenameLength = Marshal.ReadInt16(dataPtr);
+							if (filenameLength > 0) {
+								int offset = IntPtr.Size * 2;
+								string fn = Marshal.PtrToStringUni(new IntPtr(dataPtr.ToInt32() + offset));
+								string tmpStr = fn.Substring(0, filenameLength / 2);
+								description = (string)tmpStr.Clone();
 
-                                if (description == @"\Device\Tcp" ||
-                                 description == @"\Device\Udp")
-                                {
-                                    description += NetworkInfo.ConnectionDetails(ourHandle);
-                                }
+								if (description == @"\Device\Tcp" ||
+								 description == @"\Device\Udp") {
+									description += NetworkInfo.ConnectionDetails(ourHandle);
+								}
 
-                                result = true;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ee)
-            {
-                description = ee.Message;
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(dataPtr);
-                Marshal.FreeHGlobal(statusBlock);
-                CloseHandle(ourHandle);
-            }
+								result = true;
+							}
+						}
+					}
+				}
+			} catch (Exception ee) {
+				description = ee.Message;
+			}
+			finally {
+				Marshal.FreeHGlobal(dataPtr);
+				Marshal.FreeHGlobal(statusBlock);
+				CloseHandle(ourHandle);
+			}
 
-            return result;
-        }
+			return result;
+		}
 
 
-        public static int MaxObjTypeNumber
-        {
-            get { return 29; }
-        }
+		public static int MaxObjTypeNumber {
+			get { return 29; }
+		}
 
-        /// <summary>
-        /// Convert object type number to a string.
-        /// </summary>
-        /// <param name="objTypeNumber"></param>
-        /// <returns></returns>
-        public static string ObjectTypeDescription(int objTypeNumber)
-        {
-            string resultName = string.Empty;
+		/// <summary>
+		/// Convert object type number to a string.
+		/// </summary>
+		/// <param name="objTypeNumber"></param>
+		/// <returns></returns>
+		public static string ObjectTypeDescription(int objTypeNumber) {
+			string resultName = string.Empty;
 
+			/*
+			// Windows 7 ? 
             switch (objTypeNumber)
             {
                 case 1:  return  "type1";
@@ -413,195 +404,268 @@ namespace MagniFile
                 case 27:  return  "IoComplete";
                 case 28:  return  "File";
                 case 29:  return  "WmiGuid";
+                case 30:  return  "Obj_30";
+                case 31:  return  "Obj_31";
+                case 32:  return  "Obj_32";
+                case 33:  return  "Obj_33";
+                case 34:  return  "Obj_34";
+                case 35:  return  "Obj_35";
+                case 36:  return  "Obj_36";
             }
-
-            return resultName;
-        }
+			*/
 
 
-        /// <summary>
-        /// Convert access mode to string.
-        /// </summary>
-        /// <param name="access"></param>
-        /// <returns>string</returns>
-        public static string AccessToString(int access)
-        {
-            const UInt32  DELETE                         = 0x00010000;
-            const UInt32  READ_CONTROL                   = 0x00020000;
-            const UInt32  WRITE_DAC                      = 0x00040000;
-            const UInt32  WRITE_OWNER                    = 0x00080000;
-            const UInt32  SYNCHRONIZE                    = 0x00100000;
-            const UInt32  STANDARD_RIGHTS_REQUIRED       = 0x000F0000;
-            const UInt32  STANDARD_RIGHTS_ALL            = 0x001F0000;
-            const UInt32  SPECIFIC_RIGHTS_ALL            = 0x0000FFFF;
-            const UInt32  ACCESS_SYSTEM_SECURITY         = 0x01000000;
-            const UInt32  MAXIMUM_ALLOWED                = 0x02000000;
-            const UInt32  GENERIC_READ                   = 0x80000000;
-            const UInt32  GENERIC_WRITE                  = 0x40000000;
-            const UInt32  GENERIC_EXECUTE                = 0x20000000;
-            const UInt32  GENERIC_ALL                    = 0x10000000;
+			// https://github.com/FuzzySecurity/PSKernel-Primitives/blob/master/Get-Handles.ps1
+			// 	$OSVersion = [Version](Get-WmiObject Win32_OperatingSystem).Version
+			// 	$OSMajorMinor = "$($OSVersion.Major).$($OSVersion.Minor)"
 
-            // Specific access
-            const UInt32  FILE_READ_DATA            = 0x0001;    // file & pipe
-            const UInt32  FILE_LIST_DIRECTORY       = 0x0001;    // directory
-            const UInt32  FILE_WRITE_DATA           = 0x0002;    // file & pipe
-            const UInt32  FILE_ADD_FILE             = 0x0002;    // directory
-            const UInt32  FILE_APPEND_DATA          = 0x0004;    // file
-            const UInt32  FILE_ADD_SUBDIRECTORY     = 0x0004;    // directory
-            const UInt32  FILE_CREATE_PIPE_INSTANCE = 0x0004;    // named pipe
-            const UInt32  FILE_READ_EA              = 0x0008;    // file & directory
-            const UInt32  FILE_WRITE_EA             = 0x0010;    // file & directory
-            const UInt32  FILE_EXECUTE              = 0x0020;    // file
-            const UInt32  FILE_TRAVERSE             = 0x0020;    // directory
-            const UInt32  FILE_DELETE_CHILD         = 0x0040;    // directory
-            const UInt32  FILE_READ_ATTRIBUTES      = 0x0080;    // all
-            const UInt32  FILE_WRITE_ATTRIBUTES     = 0x0100;    // all
+			// Windows 10.0
+			switch (objTypeNumber) {
+				case 1: return "type1";
+				case 2: return "Type";
+				case 3: return "Directory";
+				case 4: return "SymbolicLink";
+				case 5: return "Token";
+				case 6: return "Job";
+				case 7: return "Process";
+				case 8: return "Thread";
+				case 9: return "Partition";
+				case 10: return "UserApcReserve";
+				case 11: return "IoCompletionReserve";
+				case 12: return "ActivityReference";
+				case 13: return "PsSiloContextPaged";
+				case 14: return "PsSiloContextNonPaged";
+				case 15: return "DebugObject";
+				case 16: return "Event";
+				case 17: return "Mutant";
+				case 18: return "Callback";
+				case 19: return "Semaphore";
+				case 20: return "Timer";
+				case 21: return "IRTimer";
+				case 22: return "Profile";
+				case 23: return "KeyedEvent";
+				case 24: return "WindowStation";
+				case 25: return "Desktop";
+				case 26: return "Composition";
+				case 27: return "RawInputManager";
+				case 28: return "CoreMessaging";
+				case 29: return "TpWorkerFactory";
+				case 30: return "Adapter";
+				case 31: return "Controller";
+				case 32: return "Device";
+				case 33: return "Driver";
+				case 34: return "IoCompletion";
+				case 35: return "WaitCompletionPacket";
+				case 36: return "File";
+				case 37: return "TmTm";
+				case 38: return "TmTx";
+				case 39: return "TmRm";
+				case 40: return "TmEn";
+				case 41: return "Section";
+				case 42: return "Session";
+				case 43: return "Key";
+				case 44: return "RegistryTransaction";
+				case 45: return "ALPC Port";
+				case 46: return "EnergyTracker";
+				case 47: return "PowerRequest";
+				case 48: return "WmiGuid";
+				case 49: return "EtwRegistration";
+				case 50: return "EtwSessionDemuxEntry";
+				case 51: return "EtwConsumer";
+				case 52: return "DmaAdapter";
+				case 53: return "DmaDomain";
+				case 54: return "PcwObject";
+				case 55: return "FilterConnectionPort";
+				case 56: return "FilterCommunicationPort";
+				case 57: return "NdisCmState";
+				case 58: return "DxgkSharedResource";
+				case 59: return "DxgkSharedSyncObject";
+				case 60: return "DxgkSharedSwapChainObject";
+				case 61: return "DxgkDisplayManagerObject";
+				case 62: return "DxgkCurrentDxgProcessObject";
+				case 63: return "DxgkSharedProtectedSessionObject";
+				case 64: return "DxgkSharedBundleObject";
+				case 65: return "VRegConfigurationContext";
 
-            const UInt32  FILE_ALL_ACCESS  = (STANDARD_RIGHTS_REQUIRED|SYNCHRONIZE| 0x1FF); 
-            const UInt32  FILE_GENERIC_READ = (READ_CONTROL|FILE_READ_DATA|FILE_READ_ATTRIBUTES|FILE_READ_EA|SYNCHRONIZE);
-            const UInt32  FILE_GENERIC_WRITE = (READ_CONTROL|FILE_WRITE_DATA|FILE_WRITE_ATTRIBUTES|FILE_WRITE_EA|FILE_APPEND_DATA|SYNCHRONIZE);
-            const UInt32  FILE_GENERIC_EXECUTE = (READ_CONTROL | FILE_READ_ATTRIBUTES | FILE_EXECUTE | SYNCHRONIZE);
-
-
-            UInt32 uAccess = (UInt32)access;
-
-            string sAccess = string.Empty;
-            if ((uAccess & DELETE) != 0) sAccess += "D";
-            if ((uAccess & SPECIFIC_RIGHTS_ALL) != 0)
-            {
-                if ((uAccess & FILE_READ_DATA) != 0) sAccess += "r";
-                if ((uAccess & FILE_WRITE_DATA) != 0) sAccess += "w";
-                if ((uAccess & FILE_APPEND_DATA) != 0) sAccess += "a";
-                if ((uAccess & FILE_READ_ATTRIBUTES) != 0) sAccess += "t";
-                if ((uAccess & FILE_WRITE_ATTRIBUTES) != 0) sAccess += "T";
-            }
-
-            if ((uAccess & GENERIC_ALL) != 0)
-                sAccess += "All";
-            else
-            {
-                if ((uAccess & GENERIC_READ) != 0) sAccess += "R";
-                if ((uAccess & GENERIC_WRITE) != 0) sAccess += "W";
-                if ((uAccess & GENERIC_EXECUTE) != 0) sAccess += "E";
-            }
-
-            return sAccess;
-        }
-    }
-
-
-    /// <summary>
-    /// Methods to get Network information.
-    /// </summary>
-    class NetworkInfo
-    {
-        [DllImport("ntdll.dll", SetLastError = true)]
-        public static extern uint NtDeviceIoControlFile(
-            int fileHandle,
-            IntPtr eventHandle,
-            IntPtr ptrApcRoutine,
-            IntPtr ptrApcContext,
-            IntPtr StatusBlock,
-            UInt32 ioControlCode,
-            IntPtr ptrInputBuffer,
-            int inputLength,
-            IntPtr ptrOutputBuffer,
-            int outputLength);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct TDI_REQUEST
-        {
-            public IntPtr Handle;
-            public IntPtr RequestNotifyObject;
-            public IntPtr RequestContext;
-            public UInt32 TdiStatus;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct TDI_REQUEST_QUERY_INFORMATION
-        {
-            public TDI_REQUEST Request;
-            public UInt32 QueryType;                          // class of information to be queried.
-            public IntPtr /* PTDI_CONNECTION_INFORMATION */ RequestConnectionInformation;
-        }
-
-        public static UInt16 Reverse(UInt16 v)
-        {
-            byte b1 = (byte)v;
-            byte b2 = (byte)(v >> 8);
-
-            return (UInt16)(b2 | (b1 << 8));
-        }
-
-        const UInt32 TDI_QUERY_ADDRESS_INFO = 0x00000003;
-        const UInt32 FILE_DEVICE_TRANSPORT = 0x00000021;
-        const UInt32 METHOD_OUT_DIRECT = 2;
-        const UInt32 FILE_ANY_ACCESS = 0;
-
-        // 	CTL_CODE(FILE_DEVICE_TRANSPORT, 4, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
-        const UInt32 IOCTL_TDI_QUERY_INFORMATION =
-              (FILE_DEVICE_TRANSPORT << 16)
-            | (FILE_ANY_ACCESS << 14)
-            | (4 << 2)                              // function
-            | (METHOD_OUT_DIRECT);
+				case 66: return "Obj_66";
+				case 67: return "Obj_67";
+				case 68: return "Obj_68";
+				case 69: return "Obj_69";
+			}
+			return resultName;
+		}
 
 
-        public static string ConnectionDetails(int handle)
-        {
-            IntPtr statusBlock = Marshal.AllocHGlobal(8);
-            TDI_REQUEST_QUERY_INFORMATION tdiRequestAddress =
-                new TDI_REQUEST_QUERY_INFORMATION()
-                {
-                    Request = new TDI_REQUEST() { Handle = IntPtr.Zero },
-                    QueryType = TDI_QUERY_ADDRESS_INFO
-                };
+		/// <summary>
+		/// Convert access mode to string.
+		/// </summary>
+		/// <param name="access"></param>
+		/// <returns>string</returns>
+		public static string AccessToString(int access) {
+			const UInt32 DELETE = 0x00010000;
+			const UInt32 READ_CONTROL = 0x00020000;
+			const UInt32 WRITE_DAC = 0x00040000;
+			const UInt32 WRITE_OWNER = 0x00080000;
+			const UInt32 SYNCHRONIZE = 0x00100000;
+			const UInt32 STANDARD_RIGHTS_REQUIRED = 0x000F0000;
+			const UInt32 STANDARD_RIGHTS_ALL = 0x001F0000;
+			const UInt32 SPECIFIC_RIGHTS_ALL = 0x0000FFFF;
+			const UInt32 ACCESS_SYSTEM_SECURITY = 0x01000000;
+			const UInt32 MAXIMUM_ALLOWED = 0x02000000;
+			const UInt32 GENERIC_READ = 0x80000000;
+			const UInt32 GENERIC_WRITE = 0x40000000;
+			const UInt32 GENERIC_EXECUTE = 0x20000000;
+			const UInt32 GENERIC_ALL = 0x10000000;
 
-            IntPtr tdiPtr = Marshal.AllocHGlobal(Marshal.SizeOf(tdiRequestAddress));
-            Marshal.StructureToPtr(tdiRequestAddress, tdiPtr, false);
+			// Specific access
+			const UInt32 FILE_READ_DATA = 0x0001;    // file & pipe
+			const UInt32 FILE_LIST_DIRECTORY = 0x0001;    // directory
+			const UInt32 FILE_WRITE_DATA = 0x0002;    // file & pipe
+			const UInt32 FILE_ADD_FILE = 0x0002;    // directory
+			const UInt32 FILE_APPEND_DATA = 0x0004;    // file
+			const UInt32 FILE_ADD_SUBDIRECTORY = 0x0004;    // directory
+			const UInt32 FILE_CREATE_PIPE_INSTANCE = 0x0004;    // named pipe
+			const UInt32 FILE_READ_EA = 0x0008;    // file & directory
+			const UInt32 FILE_WRITE_EA = 0x0010;    // file & directory
+			const UInt32 FILE_EXECUTE = 0x0020;    // file
+			const UInt32 FILE_TRAVERSE = 0x0020;    // directory
+			const UInt32 FILE_DELETE_CHILD = 0x0040;    // directory
+			const UInt32 FILE_READ_ATTRIBUTES = 0x0080;    // all
+			const UInt32 FILE_WRITE_ATTRIBUTES = 0x0100;    // all
 
-            const int outSize = 128;
-            IntPtr outBuffer = Marshal.AllocHGlobal(outSize);
+			const UInt32 FILE_ALL_ACCESS = (STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1FF);
+			const UInt32 FILE_GENERIC_READ = (READ_CONTROL | FILE_READ_DATA | FILE_READ_ATTRIBUTES | FILE_READ_EA | SYNCHRONIZE);
+			const UInt32 FILE_GENERIC_WRITE = (READ_CONTROL | FILE_WRITE_DATA | FILE_WRITE_ATTRIBUTES | FILE_WRITE_EA | FILE_APPEND_DATA | SYNCHRONIZE);
+			const UInt32 FILE_GENERIC_EXECUTE = (READ_CONTROL | FILE_READ_ATTRIBUTES | FILE_EXECUTE | SYNCHRONIZE);
 
-            int err = 0;
-            uint ntStatus = 0;
 
-            try
-            {
-                ntStatus = NtDeviceIoControlFile(
-                    handle,
-                    IntPtr.Zero,        // event handle
-                    IntPtr.Zero,
-                    IntPtr.Zero,
-                    statusBlock,
-                    IOCTL_TDI_QUERY_INFORMATION,
-                    tdiPtr,
-                    Marshal.SizeOf(tdiRequestAddress),
-                    outBuffer,
-                    outSize);
+			UInt32 uAccess = (UInt32)access;
 
-            }
-            catch (Exception ee)
-            {
-                err = Marshal.GetLastWin32Error();
-            }
-            string connectionStr = string.Empty;
+			string sAccess = string.Empty;
+			if ((uAccess & DELETE) != 0) sAccess += "D";
+			if ((uAccess & SPECIFIC_RIGHTS_ALL) != 0) {
+				if ((uAccess & FILE_READ_DATA) != 0) sAccess += "r";
+				if ((uAccess & FILE_WRITE_DATA) != 0) sAccess += "w";
+				if ((uAccess & FILE_APPEND_DATA) != 0) sAccess += "a";
+				if ((uAccess & FILE_READ_ATTRIBUTES) != 0) sAccess += "t";
+				if ((uAccess & FILE_WRITE_ATTRIBUTES) != 0) sAccess += "T";
+			}
 
-            if (ntStatus == 0)
-            {
-                int addr = Marshal.ReadInt32(outBuffer, 16);
-                UInt16 port = (UInt16)Marshal.ReadInt16(outBuffer, 12);
-                IPAddress ipAddr = new IPAddress(addr);
-                // struct in_addr *pAddr = (struct in_addr *)&tdiAddress[14];
-                // sout << inet_ntoa(*pAddr) << ":" <<  ntohs(*(PUSHORT)&tdiAddress[12]);
-                connectionStr = string.Format(" Ip:{0} Port:{1}", ipAddr.ToString(), Reverse(port));
-            }
+			if ((uAccess & GENERIC_ALL) != 0)
+				sAccess += "All";
+			else {
+				if ((uAccess & GENERIC_READ) != 0) sAccess += "R";
+				if ((uAccess & GENERIC_WRITE) != 0) sAccess += "W";
+				if ((uAccess & GENERIC_EXECUTE) != 0) sAccess += "E";
+			}
 
-            Marshal.FreeHGlobal(statusBlock);
-            Marshal.FreeHGlobal(tdiPtr);
-            Marshal.FreeHGlobal(outBuffer);
+			return sAccess;
+		}
+	}
 
-            return connectionStr;
-        }
-    }
+
+	/// <summary>
+	/// Methods to get Network information.
+	/// </summary>
+	class NetworkInfo {
+		[DllImport("ntdll.dll", SetLastError = true)]
+		public static extern uint NtDeviceIoControlFile(
+			int fileHandle,
+			IntPtr eventHandle,
+			IntPtr ptrApcRoutine,
+			IntPtr ptrApcContext,
+			IntPtr StatusBlock,
+			UInt32 ioControlCode,
+			IntPtr ptrInputBuffer,
+			int inputLength,
+			IntPtr ptrOutputBuffer,
+			int outputLength);
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct TDI_REQUEST {
+			public IntPtr Handle;
+			public IntPtr RequestNotifyObject;
+			public IntPtr RequestContext;
+			public UInt32 TdiStatus;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct TDI_REQUEST_QUERY_INFORMATION {
+			public TDI_REQUEST Request;
+			public UInt32 QueryType;                          // class of information to be queried.
+			public IntPtr /* PTDI_CONNECTION_INFORMATION */ RequestConnectionInformation;
+		}
+
+		public static UInt16 Reverse(UInt16 v) {
+			byte b1 = (byte)v;
+			byte b2 = (byte)(v >> 8);
+
+			return (UInt16)(b2 | (b1 << 8));
+		}
+
+		const UInt32 TDI_QUERY_ADDRESS_INFO = 0x00000003;
+		const UInt32 FILE_DEVICE_TRANSPORT = 0x00000021;
+		const UInt32 METHOD_OUT_DIRECT = 2;
+		const UInt32 FILE_ANY_ACCESS = 0;
+
+		// 	CTL_CODE(FILE_DEVICE_TRANSPORT, 4, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
+		const UInt32 IOCTL_TDI_QUERY_INFORMATION =
+			  (FILE_DEVICE_TRANSPORT << 16)
+			| (FILE_ANY_ACCESS << 14)
+			| (4 << 2)                              // function
+			| (METHOD_OUT_DIRECT);
+
+
+		public static string ConnectionDetails(int handle) {
+			IntPtr statusBlock = Marshal.AllocHGlobal(8);
+			TDI_REQUEST_QUERY_INFORMATION tdiRequestAddress =
+				new TDI_REQUEST_QUERY_INFORMATION() {
+					Request = new TDI_REQUEST() { Handle = IntPtr.Zero },
+					QueryType = TDI_QUERY_ADDRESS_INFO
+				};
+
+			IntPtr tdiPtr = Marshal.AllocHGlobal(Marshal.SizeOf(tdiRequestAddress));
+			Marshal.StructureToPtr(tdiRequestAddress, tdiPtr, false);
+
+			const int outSize = 128;
+			IntPtr outBuffer = Marshal.AllocHGlobal(outSize);
+
+			int err = 0;
+			uint ntStatus = 0;
+
+			try {
+				ntStatus = NtDeviceIoControlFile(
+					handle,
+					IntPtr.Zero,        // event handle
+					IntPtr.Zero,
+					IntPtr.Zero,
+					statusBlock,
+					IOCTL_TDI_QUERY_INFORMATION,
+					tdiPtr,
+					Marshal.SizeOf(tdiRequestAddress),
+					outBuffer,
+					outSize);
+
+			} catch (Exception ee) {
+				err = Marshal.GetLastWin32Error();
+			}
+			string connectionStr = string.Empty;
+
+			if (ntStatus == 0) {
+				int addr = Marshal.ReadInt32(outBuffer, 16);
+				UInt16 port = (UInt16)Marshal.ReadInt16(outBuffer, 12);
+				IPAddress ipAddr = new IPAddress(addr);
+				// struct in_addr *pAddr = (struct in_addr *)&tdiAddress[14];
+				// sout << inet_ntoa(*pAddr) << ":" <<  ntohs(*(PUSHORT)&tdiAddress[12]);
+				connectionStr = string.Format(" Ip:{0} Port:{1}", ipAddr.ToString(), Reverse(port));
+			}
+
+			Marshal.FreeHGlobal(statusBlock);
+			Marshal.FreeHGlobal(tdiPtr);
+			Marshal.FreeHGlobal(outBuffer);
+
+			return connectionStr;
+		}
+	}
 
 }
